@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +40,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var _currentIndex = 0;
+  var _currentIndex = 1;
   final player = AudioPlayer();
   bool isPlaying = false;
   double currentPosition = 0.0;
@@ -52,6 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
     'Interlude',
   ];
 
+  Color? dominantColor;
+
   @override
   void initState() {
     super.initState();
@@ -61,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initAudio() async {
     String currentUrl =
-        "http://localhost/audio/erratic/${currentSong.toLowerCase()}.wav";
+        "http://192.168.1.42/audio/erratic/${currentSong.toLowerCase()}.wav";
     var file;
     try {
       file = await DefaultCacheManager().getSingleFile(currentUrl);
@@ -84,8 +87,15 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
     } else {
-      print('Le fichier $currentSong n\'a pas pu être téléchargé');
+      print('Le fichier $currentSong est vide');
     }
+
+    PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(
+      NetworkImage('http://192.168.1.42/audio/erratic/cover.png'),
+    );
+
+    dominantColor = paletteGenerator.dominantColor?.color;
   }
 
   @override
@@ -114,74 +124,161 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      bottomNavigationBar: SalomonBottomBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        items: [
-          /// Home
-          SalomonBottomBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
-            selectedColor: Colors.purpleAccent,
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Current song info
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7), // This rounds the corners
+            ),
+            height: 80,
+            child: Card(
+              color: (dominantColor ?? Colors.green).withOpacity(0.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    10), // This rounds the corners of the Card
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(7),
+                            child: Image(
+                              image: NetworkImage(
+                                'http://192.168.1.42/audio/erratic/cover.png',
+                              ),
+                              width: 72,
+                              height: 72,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            currentSong,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                        onPressed: isPlaying ? _pauseAudio : _playAudio,
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ProgressBar(
+                        progress:
+                            Duration(milliseconds: currentPosition.toInt()),
+                        total: Duration(milliseconds: maxDuration.toInt()),
+                        thumbRadius: 0,
+                        thumbGlowRadius: 0,
+                        barHeight: 2,
+                        timeLabelLocation: TimeLabelLocation.none,
+                        baseBarColor: Colors.white54,
+                        progressBarColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
 
-          /// Search
-          SalomonBottomBarItem(
-            icon: Icon(Icons.search),
-            title: Text("Search"),
-            selectedColor: Colors.orangeAccent,
-          ),
+          // Bottom bar
+          SalomonBottomBar(
+            currentIndex: _currentIndex,
+            onTap: (i) => setState(() => _currentIndex = i),
+            items: [
+              /// Search
+              SalomonBottomBarItem(
+                icon: Icon(Icons.search),
+                title: Text("Search"),
+                selectedColor: Colors.pinkAccent,
+              ),
 
-          /// Profile
-          SalomonBottomBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Artist"),
-            selectedColor: Colors.tealAccent,
+              /// Home
+              SalomonBottomBarItem(
+                icon: Icon(Icons.home),
+                title: Text("Home"),
+                selectedColor: Colors.purpleAccent,
+              ),
+
+              /// Profile
+              SalomonBottomBarItem(
+                icon: Icon(Icons.favorite),
+                title: Text("Favorites"),
+                selectedColor: Colors.redAccent,
+              ),
+            ],
           ),
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            DropdownButton<String>(
-              value: currentSong,
-              onChanged: (String? newValue) {
-                if (newValue != null && newValue != currentSong) {
-                  setState(() {
-                    isPlaying = false;
-                    currentSong = newValue;
-                  });
-                  initAudio();
-                }
-              },
-              items: songs.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            Stack(
-              children: <Widget>[
-                ProgressBar(
-                  progress: Duration(milliseconds: currentPosition.toInt()),
-                  buffered: Duration(milliseconds: bufferedPosition.toInt()),
-                  total: Duration(milliseconds: maxDuration.toInt()),
-                  onSeek: (duration) {
-                    player.seek(duration);
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              DropdownButton<String>(
+                value: currentSong,
+                onChanged: (String? newValue) {
+                  if (newValue != null && newValue != currentSong) {
                     setState(() {
-                      currentPosition = duration.inMilliseconds.toDouble();
+                      isPlaying = false;
+                      currentSong = newValue;
                     });
-                  },
-                ),
-              ],
-            ),
-            IconButton(
-              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-              onPressed: isPlaying ? _pauseAudio : _playAudio,
-            ),
-          ],
+                    initAudio();
+                  }
+                },
+                items: songs.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              Image(
+                  image: NetworkImage(
+                      'http://192.168.1.42/audio/erratic/cover.png')),
+              SizedBox(height: 10),
+              Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 650),
+                      child: ProgressBar(
+                        progress:
+                            Duration(milliseconds: currentPosition.toInt()),
+                        buffered:
+                            Duration(milliseconds: bufferedPosition.toInt()),
+                        total: Duration(milliseconds: maxDuration.toInt()),
+                        onSeek: (duration) {
+                          player.seek(duration);
+                          setState(() {
+                            currentPosition =
+                                duration.inMilliseconds.toDouble();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                onPressed: isPlaying ? _pauseAudio : _playAudio,
+              ),
+            ],
+          ),
         ),
       ),
     );
