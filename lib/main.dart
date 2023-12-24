@@ -5,8 +5,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
-
-String url = 'http://192.168.1.42';
+import 'package:spartacus_project/songcard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -106,14 +105,14 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<void> _playAudio() async {
+  Future<void> playAudio() async {
     await player.play();
     setState(() {
       isPlaying = true;
     });
   }
 
-  Future<void> _pauseAudio() async {
+  Future<void> pauseAudio() async {
     await player.pause();
     setState(() {
       isPlaying = false;
@@ -129,71 +128,16 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Current song info
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7), // This rounds the corners
+          if (currentSong != '' && _currentIndex != 1)
+            SongCard(
+              currentSong: currentSong,
+              isPlaying: isPlaying,
+              pauseAudio: pauseAudio,
+              playAudio: playAudio,
+              currentPosition: currentPosition,
+              maxDuration: maxDuration,
+              dominantColor: dominantColor,
             ),
-            height: 80,
-            child: Card(
-              color: (dominantColor ?? Colors.green).withOpacity(0.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    10), // This rounds the corners of the Card
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(7),
-                            child: Image(
-                              image: NetworkImage(
-                                url + '/audio/lkp/erratic/cover.png',
-                              ),
-                              width: 72,
-                              height: 72,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            currentSong,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                        onPressed: isPlaying ? _pauseAudio : _playAudio,
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ProgressBar(
-                        progress:
-                            Duration(milliseconds: currentPosition.toInt()),
-                        total: Duration(milliseconds: maxDuration.toInt()),
-                        thumbRadius: 0,
-                        thumbGlowRadius: 0,
-                        barHeight: 2,
-                        timeLabelLocation: TimeLabelLocation.none,
-                        baseBarColor: Colors.white54,
-                        progressBarColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
 
           // Bottom bar
           SalomonBottomBar(
@@ -275,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               IconButton(
                 icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                onPressed: isPlaying ? _pauseAudio : _playAudio,
+                onPressed: isPlaying ? pauseAudio : playAudio,
               ),
             ],
           ),
