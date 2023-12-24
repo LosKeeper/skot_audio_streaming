@@ -6,6 +6,8 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
 
+String url = 'http://192.168.1.42';
+
 void main() {
   runApp(const MyApp());
 }
@@ -64,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initAudio() async {
     String currentUrl =
-        "http://192.168.1.42/audio/erratic/${currentSong.toLowerCase()}.wav";
+        url + "/audio/lkp/erratic/${currentSong.toLowerCase()}.wav";
     var file;
     try {
       file = await DefaultCacheManager().getSingleFile(currentUrl);
@@ -92,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(
-      NetworkImage('http://192.168.1.42/audio/erratic/cover.png'),
+      NetworkImage(url + '/audio/lkp/erratic/cover.png'),
     );
 
     dominantColor = paletteGenerator.dominantColor?.color;
@@ -150,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(7),
                             child: Image(
                               image: NetworkImage(
-                                'http://192.168.1.42/audio/erratic/cover.png',
+                                url + '/audio/lkp/erratic/cover.png',
                               ),
                               width: 72,
                               height: 72,
@@ -245,9 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 }).toList(),
               ),
-              Image(
-                  image: NetworkImage(
-                      'http://192.168.1.42/audio/erratic/cover.png')),
+              Image(image: NetworkImage(url + '/audio/lkp/erratic/cover.png')),
               SizedBox(height: 10),
               Stack(
                 children: <Widget>[
