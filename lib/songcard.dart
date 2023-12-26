@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
-String url = 'http://192.168.1.42';
-
 class SongCard extends StatelessWidget {
   final String currentSong;
+  final String currentArtist;
   final bool isPlaying;
   final Function pauseAudio;
   final Function playAudio;
   final double currentPosition;
   final double maxDuration;
+  final String urlCurrentSong;
+  final String urlCurrentCover;
   final Color? dominantColor;
 
   SongCard({
     required this.currentSong,
+    required this.currentArtist,
     required this.isPlaying,
     required this.pauseAudio,
     required this.playAudio,
     required this.currentPosition,
     required this.maxDuration,
-    this.dominantColor,
+    required this.urlCurrentSong,
+    required this.urlCurrentCover,
+    required this.dominantColor,
   });
 
   @override
@@ -44,27 +48,28 @@ class SongCard extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(7),
                       child: Image(
-                        image: NetworkImage(
-                          url + '/audio/lkp/erratic/cover.png',
-                        ),
+                        image: (urlCurrentCover).isNotEmpty
+                            ? Image.network(urlCurrentCover).image
+                            : const AssetImage(
+                                'assets/images/default_cover.png'),
                         width: 72,
                         height: 72,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           currentSong,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'LKP',
-                          style: TextStyle(
+                          currentArtist,
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.normal,
                           ),
