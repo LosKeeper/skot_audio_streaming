@@ -8,7 +8,7 @@ qualityToExtension(int quality) {
     case 0:
       return '.aac';
     case 1:
-      return '.flacc';
+      return '.flac';
     case 2:
       return '.wav';
     default:

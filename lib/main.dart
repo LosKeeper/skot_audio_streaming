@@ -4,18 +4,34 @@ import 'dart:math';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
 import 'package:spartacus_project/network_request_manager.dart';
 import 'package:spartacus_project/current_song_page.dart';
+import 'package:spartacus_project/settings_page.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> saveQuality(int quality) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('quality', quality);
+}
+
+Future<int> loadQuality() async {
+  final prefs = await SharedPreferences.getInstance();
+  final quality = prefs.getInt('quality');
+  return quality ?? 0;
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var quality = await loadQuality();
+  runApp(MyApp(quality: quality));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  final int quality;
+  const MyApp({super.key, required this.quality});
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +45,16 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'LKP Streaming'),
+      home: MyHomePage(title: 'LKP Streaming', quality: quality),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.quality});
 
   final String title;
+  final int quality;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -45,7 +62,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
-  var quality = 0;
+  int quality = 0;
   final player = AudioPlayer();
   bool isPlaying = false;
   double currentPosition = 0.0;
@@ -68,6 +85,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     jsonAvailableSongs = await requestManager.getRequestSongs();
     jsonAvailableAlbums = await requestManager.getRequestAlbums();
+  }
+
+  Future<void> changeQuality(int newQuality) async {
+    player.stop();
+    setState(() {
+      isPlaying = false;
+      quality = newQuality;
+    });
+    await saveQuality(newQuality);
+    initAudio();
   }
 
   Future<void> changeCurrentIndex(int newIndex) async {
@@ -98,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> initAsyncState() async {
     await fillAvailableSongsAndAlbums();
     currentSong = jsonAvailableSongs.keys.toList()[0];
+    quality = widget.quality;
     initAudio();
   }
 
@@ -174,6 +202,9 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => changeCurrentIndex(3),
             icon: const Icon(Icons.music_note),
           ),
+          IconButton(
+              onPressed: () => changeCurrentIndex(4),
+              icon: const Icon(Icons.settings))
         ],
       ),
       bottomNavigationBar: Column(
@@ -253,6 +284,11 @@ class _MyHomePageState extends State<MyHomePage> {
               changeCurrentPosition: changeCurrentPosition,
               isPlaying: isPlaying,
               urlCurrentCover: urlCurrentCover,
+            );
+          case 4:
+            return SettingsPage(
+              quality: quality,
+              changeQuality: changeQuality,
             );
           default:
             return const Center(

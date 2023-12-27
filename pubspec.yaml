@@ -44,6 +44,7 @@ dependencies:
   palette_generator: ^0.3.3+3
   http: ^1.1.2
   just_audio_background: ^0.0.1-beta.11
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
