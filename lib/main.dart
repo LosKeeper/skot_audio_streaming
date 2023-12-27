@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spartacus_project/constants.dart';
-import 'package:spartacus_project/songcard.dart';
-import 'package:spartacus_project/requestmanager.dart';
+import 'package:spartacus_project/current_song_card.dart';
+import 'package:spartacus_project/network_request_manager.dart';
+import 'package:spartacus_project/current_song_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Spartacus Project Home Page'),
+      home: const MyHomePage(title: 'LKP Streaming'),
     );
   }
 }
@@ -53,11 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
   double maxDuration = 1.0;
   String currentSong = '';
   String currentArtist = '';
-  var jsonAvailableSongs;
-  var jsonAvailableAlbums;
+  Map<String, dynamic> jsonAvailableSongs = {};
+  Map<String, dynamic> jsonAvailableAlbums = {};
   String urlCurrentSong = '';
   String urlCurrentCover = '';
   Color? dominantColor;
+  Color? textColor;
 
   // Fill availableSongs and availableAlbums
   Future<void> fillAvailableSongsAndAlbums() async {
@@ -67,6 +68,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     jsonAvailableSongs = await requestManager.getRequestSongs();
     jsonAvailableAlbums = await requestManager.getRequestAlbums();
+  }
+
+  Future<void> changeCurrentIndex(int newIndex) async {
+    setState(() {
+      _currentIndex = newIndex;
+    });
+  }
+
+  Future<void> changeCurrentSong(String newSong) async {
+    setState(() {
+      isPlaying = false;
+      currentSong = newSong;
+    });
+    await player.stop();
+    await initAudio();
+  }
+
+  Future<void> changeCurrentPosition(double newPosition) async {
+    await player.seek(Duration(milliseconds: newPosition.toInt()));
   }
 
   @override
@@ -84,8 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> initAudio() async {
     currentArtist = jsonAvailableSongs[currentSong]['artist'].toString();
 
-    urlCurrentCover =
-        url + '/' + jsonAvailableSongs[currentSong]['cover_path'].toString();
+    urlCurrentCover = '$url/${jsonAvailableSongs[currentSong]['cover_path']}';
     PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(
       NetworkImage(urlCurrentCover),
@@ -93,16 +112,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     dominantColor = paletteGenerator.dominantColor?.color;
 
-    String currentUrl = url +
-        '/' +
-        jsonAvailableSongs[currentSong]['file_path'].toString() +
+    if (dominantColor != null) {
+      textColor =
+          dominantColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    }
+
+    String currentUrl = '$url/${jsonAvailableSongs[currentSong]['file_path']}' +
         qualityToExtension(quality);
-    print(currentUrl);
-    var file;
+    dynamic file;
     try {
       file = await DefaultCacheManager().getSingleFile(currentUrl);
     } catch (e) {
-      print('Le fichier $currentSong n\'a pas pu être téléchargé');
+      print(e);
     }
     if (file != null) {
       await player.setFilePath(file.path);
@@ -120,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
     } else {
-      print('Le fichier $currentSong est vide');
+      print('File is null');
     }
   }
 
@@ -148,13 +169,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () => changeCurrentIndex(3),
+            icon: const Icon(Icons.music_note),
+          ),
+        ],
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (currentSong != '' && _currentIndex != 1)
-            SongCard(
+          if (currentSong != '' && _currentIndex != 3)
+            CurrentSongCard(
               currentSong: currentSong,
               currentArtist: currentArtist,
               isPlaying: isPlaying,
@@ -165,6 +191,8 @@ class _MyHomePageState extends State<MyHomePage> {
               dominantColor: dominantColor,
               urlCurrentSong: urlCurrentSong,
               urlCurrentCover: urlCurrentCover,
+              changeCurrentIndex: changeCurrentIndex,
+              textColor: textColor,
             ),
 
           // Bottom bar
@@ -196,81 +224,42 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              DropdownButton<String>(
-                value: currentSong,
-                onChanged: (String? newValue) {
-                  if (newValue != null && newValue != currentSong) {
-                    setState(() {
-                      isPlaying = false;
-                      currentSong = newValue;
-                    });
-                    player.stop();
-                    initAudio();
-                  }
-                },
-                items: jsonAvailableSongs != null
-                    ? jsonAvailableSongs.keys
-                        .toList()
-                        .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList()
-                    : [],
-              ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 700),
-                child: Image(
-                  image: (urlCurrentCover).isNotEmpty
-                      ? Image.network(urlCurrentCover).image
-                      : const AssetImage('assets/images/default_cover.png'),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 650),
-                      child: ProgressBar(
-                        progress:
-                            Duration(milliseconds: currentPosition.toInt()),
-                        buffered:
-                            Duration(milliseconds: bufferedPosition.toInt()),
-                        total: Duration(milliseconds: maxDuration.toInt()),
-                        onSeek: (duration) {
-                          player.seek(duration);
-                          setState(() {
-                            currentPosition =
-                                duration.inMilliseconds.toDouble();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              IconButton(
-                icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                onPressed: () {
-                  if (isPlaying) {
-                    pauseAudio();
-                  } else {
-                    playAudio();
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      body: () {
+        switch (_currentIndex) {
+          case 0:
+            return const Center(
+              child: Text('Search'),
+            );
+          case 1:
+            return const Center(
+              child: Text('Home'),
+            );
+          case 2:
+            return const Center(
+              child: Text('Favorites'),
+            );
+          case 3:
+            return CurrentSongPage(
+              currentSong: currentSong,
+              jsonAvailableSongs: jsonAvailableSongs,
+              playAudio: playAudio,
+              pauseAudio: pauseAudio,
+              initAudio: initAudio,
+              player: player,
+              currentPosition: currentPosition,
+              bufferedPosition: bufferedPosition,
+              maxDuration: maxDuration,
+              changeCurrentSong: changeCurrentSong,
+              changeCurrentPosition: changeCurrentPosition,
+              isPlaying: isPlaying,
+              urlCurrentCover: urlCurrentCover,
+            );
+          default:
+            return const Center(
+              child: Text('Error'),
+            );
+        }
+      }(),
     );
   }
 }
