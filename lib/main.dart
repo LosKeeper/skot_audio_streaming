@@ -4,24 +4,12 @@ import 'dart:math';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
 import 'package:spartacus_project/network_request_manager.dart';
 import 'package:spartacus_project/current_song_page.dart';
 import 'package:spartacus_project/settings_page.dart';
-
-Future<void> saveQuality(int quality) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setInt('quality', quality);
-}
-
-Future<int> loadQuality() async {
-  final prefs = await SharedPreferences.getInstance();
-  final quality = prefs.getInt('quality');
-  return quality ?? 0;
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -145,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
           dominantColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white;
     }
 
+    // ignore: prefer_interpolation_to_compose_strings
     String currentUrl = '$url/${jsonAvailableSongs[currentSong]['file_path']}' +
         qualityToExtension(quality);
     dynamic file;

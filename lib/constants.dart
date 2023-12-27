@@ -1,7 +1,9 @@
-String url = 'http://192.168.1.42';
+import 'package:shared_preferences/shared_preferences.dart';
 
-String availableSongsUrl = url + '/audio/available_songs.json';
-String availableAlbumsUrl = url + '/audio/available_albums.json';
+String url = 'http://loskeeper.fr:42024';
+
+String availableSongsUrl = '$url/audio/available_songs.json';
+String availableAlbumsUrl = '$url/audio/available_albums.json';
 
 qualityToExtension(int quality) {
   switch (quality) {
@@ -14,4 +16,15 @@ qualityToExtension(int quality) {
     default:
       return 'wav';
   }
+}
+
+Future<void> saveQuality(int quality) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('quality', quality);
+}
+
+Future<int> loadQuality() async {
+  final prefs = await SharedPreferences.getInstance();
+  final quality = prefs.getInt('quality');
+  return quality ?? 0;
 }
