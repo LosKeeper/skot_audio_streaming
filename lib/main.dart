@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
 
@@ -134,32 +133,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // ignore: prefer_interpolation_to_compose_strings
-    String currentUrl = '$url/${jsonAvailableSongs[currentSong]['file_path']}' +
+    urlCurrentSong = '$url/${jsonAvailableSongs[currentSong]['file_path']}' +
         qualityToExtension(quality);
-    dynamic file;
-    try {
-      file = await DefaultCacheManager().getSingleFile(currentUrl);
-    } catch (e) {
-      print(e);
-    }
-    if (file != null) {
-      await player.setFilePath(file.path);
-      player.positionStream.listen((duration) {
-        setState(() {
-          currentPosition = duration.inMilliseconds.toDouble();
-          maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
-        });
+
+    await player.setUrl(urlCurrentSong);
+    player.positionStream.listen((duration) {
+      setState(() {
+        currentPosition = duration.inMilliseconds.toDouble();
+        maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
       });
-      player.bufferedPositionStream.listen((duration) {
-        setState(() {
-          bufferedPosition =
-              min(duration.inMilliseconds.toDouble(), maxDuration);
-        });
+    });
+    player.bufferedPositionStream.listen((duration) {
+      setState(() {
+        bufferedPosition = min(duration.inMilliseconds.toDouble(), maxDuration);
       });
-      maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
-    } else {
-      print('File is null');
-    }
+    });
+    maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
   }
 
   @override

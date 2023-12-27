@@ -38,13 +38,13 @@ dependencies:
   just_audio: ^0.9.36
   just_audio_windows: ^0.2.0
   just_audio_mpv: ^0.1.7
-  flutter_cache_manager: ^3.1.2
   audio_video_progress_bar: ^2.0.1
   salomon_bottom_bar: ^3.3.2
   palette_generator: ^0.3.3+3
   http: ^1.1.2
   just_audio_background: ^0.0.1-beta.11
   shared_preferences: ^2.2.2
+  just_audio_web: ^0.4.9
 
 dev_dependencies:
   flutter_test:
