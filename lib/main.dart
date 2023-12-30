@@ -8,6 +8,7 @@ import 'package:spartacus_project/audio_player_controller.dart';
 import 'package:spartacus_project/pages/current_song_page.dart';
 import 'package:spartacus_project/pages/settings_page.dart';
 import 'package:spartacus_project/pages/search_page.dart';
+import 'package:spartacus_project/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         actions: [
           IconButton(
             onPressed: () => changeCurrentIndex(3),
@@ -135,15 +137,18 @@ class _MyHomePageState extends State<MyHomePage> {
         switch (_currentIndex) {
           case 0:
             return SearchPage(
-              jsonAvailableSongs: audioPlayerController.jsonAvailableSongs,
-              jsonAvailableAlbums: audioPlayerController.jsonAvailableAlbums,
+              jsonAvailableSongs:
+                  audioPlayerController.requestManager.jsonAvailableSongs,
+              jsonAvailableAlbums:
+                  audioPlayerController.requestManager.jsonAvailableAlbums,
               changeCurrentSong: audioPlayerController.changeCurrentSong,
               changeCurrentIndex: changeCurrentIndex,
             );
           case 1:
-            return const Center(
-              child: Text('Home'),
+            return HomePage(
+              audioPlayerController: audioPlayerController,
             );
+
           case 2:
             return const Center(
               child: Text('Favorites'),

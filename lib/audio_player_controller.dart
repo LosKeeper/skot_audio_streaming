@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ class AudioPlayerController extends ChangeNotifier {
       StreamController<double>.broadcast();
 
   Stream<double> get positionStream => _positionController.stream;
+  StreamController<bool> jsonLoadedController =
+      StreamController<bool>.broadcast();
 
   final player = AudioPlayer();
   RequestManager requestManager = RequestManager(
@@ -28,8 +32,6 @@ class AudioPlayerController extends ChangeNotifier {
   Color? textColor;
   ImageProvider currentCover =
       const AssetImage('assets/images/default_cover.png');
-  Map<String, dynamic> jsonAvailableSongs = {};
-  Map<String, dynamic> jsonAvailableAlbums = {};
   String currentSong = '';
   bool jsonLoaded = false;
 
@@ -46,21 +48,22 @@ class AudioPlayerController extends ChangeNotifier {
   Future<void> initJson() async {
     await requestManager.fillAvailableSongsAndAlbums();
     jsonLoaded = true;
-    jsonAvailableSongs = requestManager.jsonAvailableSongs;
-    jsonAvailableAlbums = requestManager.jsonAvailableAlbums;
-    currentSong = jsonAvailableSongs.keys.toList()[0];
+    jsonLoadedController.add(true);
+    currentSong = requestManager.jsonAvailableSongs.keys.toList()[0];
   }
 
+  // ignore: duplicate_ignore
   Future<void> initAudio() async {
     // Wait until json is loaded
     while (!jsonLoaded) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    currentArtist = jsonAvailableSongs[currentSong]['artist'].toString();
+    currentArtist =
+        requestManager.jsonAvailableSongs[currentSong]['artist'].toString();
 
-    currentCover =
-        NetworkImage('$url/${jsonAvailableSongs[currentSong]['cover_path']}');
+    currentCover = NetworkImage(
+        '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}');
 
     PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(currentCover);
@@ -72,9 +75,9 @@ class AudioPlayerController extends ChangeNotifier {
           dominantColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white;
     }
 
-    // ignore: prefer_interpolation_to_compose_strings
-    await player.setUrl('$url/${jsonAvailableSongs[currentSong]['file_path']}' +
-        qualityToExtension(quality));
+    await player.setUrl(
+        '$url/${requestManager.jsonAvailableSongs[currentSong]['file_path']}' +
+            qualityToExtension(quality));
     player.positionStream.listen((duration) {
       currentPosition = duration.inMilliseconds.toDouble();
       maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
