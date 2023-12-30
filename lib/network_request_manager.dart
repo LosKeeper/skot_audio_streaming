@@ -5,6 +5,9 @@ class RequestManager {
   final String availableSongsUrl;
   final String availableAlbumsUrl;
 
+  Map<String, dynamic> jsonAvailableSongs = {};
+  Map<String, dynamic> jsonAvailableAlbums = {};
+
   RequestManager(
       {required this.availableSongsUrl, required this.availableAlbumsUrl});
 
@@ -18,5 +21,10 @@ class RequestManager {
     var response = await http.get(Uri.parse(availableAlbumsUrl));
     var json = jsonDecode(response.body);
     return json;
+  }
+
+  Future<void> fillAvailableSongsAndAlbums() async {
+    jsonAvailableSongs = await getRequestSongs();
+    jsonAvailableAlbums = await getRequestAlbums();
   }
 }

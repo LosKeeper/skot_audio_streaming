@@ -5,8 +5,7 @@ class SettingsPage extends StatefulWidget {
   final Function changeQuality;
 
   const SettingsPage(
-      {Key? key, required this.quality, required this.changeQuality})
-      : super(key: key);
+      {super.key, required this.quality, required this.changeQuality});
 
   @override
   _SettingsPageState createState() => _SettingsPageState();

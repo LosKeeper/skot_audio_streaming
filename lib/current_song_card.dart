@@ -1,33 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
-class CurrentSongCard extends StatelessWidget {
-  final String currentSong;
-  final String currentArtist;
-  final bool isPlaying;
-  final Function pauseAudio;
-  final Function playAudio;
-  final double currentPosition;
-  final double maxDuration;
-  final String urlCurrentSong;
-  final String urlCurrentCover;
-  final Color? dominantColor;
-  final Function changeCurrentIndex;
-  final Color? textColor;
+import 'package:spartacus_project/audio_player_controller.dart';
 
-  CurrentSongCard({
-    required this.currentSong,
-    required this.currentArtist,
-    required this.isPlaying,
-    required this.pauseAudio,
-    required this.playAudio,
-    required this.currentPosition,
-    required this.maxDuration,
-    required this.urlCurrentSong,
-    required this.urlCurrentCover,
-    required this.dominantColor,
+class CurrentSongCard extends StatelessWidget {
+  final AudioPlayerController audioPlayerController;
+  final Function changeCurrentIndex;
+  final double position;
+
+  const CurrentSongCard({
+    super.key,
+    required this.audioPlayerController,
     required this.changeCurrentIndex,
-    required this.textColor,
+    required this.position,
   });
 
   @override
@@ -41,7 +26,8 @@ class CurrentSongCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(7),
         onTap: () => changeCurrentIndex(3),
         child: Card(
-          color: (dominantColor ?? Colors.green).withOpacity(0.5),
+          color: (audioPlayerController.dominantColor ?? Colors.green)
+              .withOpacity(0.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -55,10 +41,7 @@ class CurrentSongCard extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(7),
                         child: Image(
-                          image: (urlCurrentCover).isNotEmpty
-                              ? Image.network(urlCurrentCover).image
-                              : const AssetImage(
-                                  'assets/images/default_cover.png'),
+                          image: audioPlayerController.currentCover,
                           width: 72,
                           height: 72,
                         ),
@@ -68,19 +51,19 @@ class CurrentSongCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            currentSong,
+                            audioPlayerController.currentSong,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: textColor,
+                              color: audioPlayerController.textColor,
                             ),
                           ),
                           Text(
-                            currentArtist,
+                            audioPlayerController.currentArtist,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.normal,
-                              color: textColor,
+                              color: audioPlayerController.textColor,
                             ),
                           ),
                         ],
@@ -88,9 +71,12 @@ class CurrentSongCard extends StatelessWidget {
                     ],
                   ),
                   IconButton(
-                    icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                    onPressed:
-                        isPlaying ? () => pauseAudio() : () => playAudio(),
+                    icon: Icon(audioPlayerController.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow),
+                    onPressed: audioPlayerController.isPlaying
+                        ? () => audioPlayerController.pauseAudio()
+                        : () => audioPlayerController.playAudio(),
                   ),
                 ],
               ),
@@ -98,8 +84,12 @@ class CurrentSongCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ProgressBar(
-                    progress: Duration(milliseconds: currentPosition.toInt()),
-                    total: Duration(milliseconds: maxDuration.toInt()),
+                    progress: Duration(
+                        milliseconds:
+                            audioPlayerController.currentPosition.toInt()),
+                    total: Duration(
+                        milliseconds:
+                            audioPlayerController.maxDuration.toInt()),
                     thumbRadius: 0,
                     thumbGlowRadius: 0,
                     barHeight: 2,

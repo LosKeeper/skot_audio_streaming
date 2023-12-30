@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'dart:math';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
-import 'package:spartacus_project/network_request_manager.dart';
+import 'package:spartacus_project/audio_player_controller.dart';
+
 import 'package:spartacus_project/pages/current_song_page.dart';
 import 'package:spartacus_project/pages/settings_page.dart';
 import 'package:spartacus_project/pages/search_page.dart';
@@ -50,40 +48,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
-  int quality = 0;
-  final player = AudioPlayer();
-  bool isPlaying = false;
-  double currentPosition = 0.0;
-  double bufferedPosition = 0.0;
-  double maxDuration = 1.0;
-  String currentSong = '';
-  String currentArtist = '';
-  Map<String, dynamic> jsonAvailableSongs = {};
-  Map<String, dynamic> jsonAvailableAlbums = {};
-  String urlCurrentSong = '';
-  String urlCurrentCover = '';
-  Color? dominantColor;
-  Color? textColor;
-
-  // Fill availableSongs and availableAlbums
-  Future<void> fillAvailableSongsAndAlbums() async {
-    var requestManager = RequestManager(
-      availableSongsUrl: availableSongsUrl,
-      availableAlbumsUrl: availableAlbumsUrl,
-    );
-    jsonAvailableSongs = await requestManager.getRequestSongs();
-    jsonAvailableAlbums = await requestManager.getRequestAlbums();
-  }
-
-  Future<void> changeQuality(int newQuality) async {
-    player.stop();
-    setState(() {
-      isPlaying = false;
-      quality = newQuality;
-    });
-    await saveQuality(newQuality);
-    initAudio();
-  }
+  late AudioPlayerController audioPlayerController;
 
   Future<void> changeCurrentIndex(int newIndex) async {
     setState(() {
@@ -91,85 +56,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> changeCurrentSong(String newSong) async {
-    setState(() {
-      isPlaying = false;
-      currentSong = newSong;
-    });
-    await player.stop();
-    await initAudio();
-  }
-
-  Future<void> changeCurrentPosition(double newPosition) async {
-    await player.seek(Duration(milliseconds: newPosition.toInt()));
-  }
-
   @override
   void initState() {
     super.initState();
-    initAsyncState();
-  }
-
-  Future<void> initAsyncState() async {
-    await fillAvailableSongsAndAlbums();
-    currentSong = jsonAvailableSongs.keys.toList()[0];
-    quality = widget.quality;
-    initAudio();
-  }
-
-  Future<void> initAudio() async {
-    currentArtist = jsonAvailableSongs[currentSong]['artist'].toString();
-
-    urlCurrentCover = '$url/${jsonAvailableSongs[currentSong]['cover_path']}';
-    PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(
-      NetworkImage(urlCurrentCover),
+    audioPlayerController = AudioPlayerController(
+      quality: widget.quality,
     );
-
-    dominantColor = paletteGenerator.dominantColor?.color;
-
-    if (dominantColor != null) {
-      textColor =
-          dominantColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white;
-    }
-
-    // ignore: prefer_interpolation_to_compose_strings
-    urlCurrentSong = '$url/${jsonAvailableSongs[currentSong]['file_path']}' +
-        qualityToExtension(quality);
-
-    await player.setUrl(urlCurrentSong);
-    player.positionStream.listen((duration) {
-      setState(() {
-        currentPosition = duration.inMilliseconds.toDouble();
-        maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
-      });
-    });
-    player.bufferedPositionStream.listen((duration) {
-      setState(() {
-        bufferedPosition = min(duration.inMilliseconds.toDouble(), maxDuration);
-      });
-    });
-    maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
+    audioPlayerController.init();
   }
 
   @override
   void dispose() {
-    player.dispose();
+    audioPlayerController.player.dispose();
     super.dispose();
-  }
-
-  Future<void> playAudio() async {
-    setState(() {
-      isPlaying = true;
-    });
-    await player.play();
-  }
-
-  Future<void> pauseAudio() async {
-    setState(() {
-      isPlaying = false;
-    });
-    await player.pause();
   }
 
   @override
@@ -189,20 +88,18 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (currentSong != '' && _currentIndex != 3)
-            CurrentSongCard(
-              currentSong: currentSong,
-              currentArtist: currentArtist,
-              isPlaying: isPlaying,
-              pauseAudio: pauseAudio,
-              playAudio: playAudio,
-              currentPosition: currentPosition,
-              maxDuration: maxDuration,
-              dominantColor: dominantColor,
-              urlCurrentSong: urlCurrentSong,
-              urlCurrentCover: urlCurrentCover,
-              changeCurrentIndex: changeCurrentIndex,
-              textColor: textColor,
+          if (audioPlayerController.currentSong != '' && _currentIndex != 3)
+            StreamBuilder<double>(
+              stream: audioPlayerController.positionStream,
+              builder: (context, snapshot) {
+                double position = snapshot.data ?? 0.0;
+                return CurrentSongCard(
+                  audioPlayerController: audioPlayerController,
+                  changeCurrentIndex: changeCurrentIndex,
+                  position:
+                      position, // Pass the current position to CurrentSongCard
+                );
+              },
             ),
 
           // Bottom bar
@@ -238,9 +135,9 @@ class _MyHomePageState extends State<MyHomePage> {
         switch (_currentIndex) {
           case 0:
             return SearchPage(
-              jsonAvailableSongs: jsonAvailableSongs,
-              jsonAvailableAlbums: jsonAvailableAlbums,
-              changeCurrentSong: changeCurrentSong,
+              jsonAvailableSongs: audioPlayerController.jsonAvailableSongs,
+              jsonAvailableAlbums: audioPlayerController.jsonAvailableAlbums,
+              changeCurrentSong: audioPlayerController.changeCurrentSong,
               changeCurrentIndex: changeCurrentIndex,
             );
           case 1:
@@ -252,25 +149,19 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Favorites'),
             );
           case 3:
-            return CurrentSongPage(
-              currentSong: currentSong,
-              currentArtist: currentArtist,
-              playAudio: playAudio,
-              pauseAudio: pauseAudio,
-              initAudio: initAudio,
-              player: player,
-              currentPosition: currentPosition,
-              bufferedPosition: bufferedPosition,
-              maxDuration: maxDuration,
-              changeCurrentSong: changeCurrentSong,
-              changeCurrentPosition: changeCurrentPosition,
-              isPlaying: isPlaying,
-              urlCurrentCover: urlCurrentCover,
-            );
+            return StreamBuilder<double>(
+                stream: audioPlayerController.positionStream,
+                builder: (context, snapshot) {
+                  double position = snapshot.data ?? 0.0;
+                  return CurrentSongPage(
+                    audioPlayerController: audioPlayerController,
+                    position: position,
+                  );
+                });
           case 4:
             return SettingsPage(
-              quality: quality,
-              changeQuality: changeQuality,
+              quality: audioPlayerController.quality,
+              changeQuality: audioPlayerController.changeQuality,
             );
           default:
             return const Center(
