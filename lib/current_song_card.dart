@@ -38,6 +38,7 @@ class CurrentSongCard extends StatelessWidget {
       ),
       height: 80,
       child: InkWell(
+        borderRadius: BorderRadius.circular(7),
         onTap: () => changeCurrentIndex(3),
         child: Card(
           color: (dominantColor ?? Colors.green).withOpacity(0.5),

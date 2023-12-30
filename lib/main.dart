@@ -7,8 +7,9 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
 import 'package:spartacus_project/network_request_manager.dart';
-import 'package:spartacus_project/current_song_page.dart';
-import 'package:spartacus_project/settings_page.dart';
+import 'package:spartacus_project/pages/current_song_page.dart';
+import 'package:spartacus_project/pages/settings_page.dart';
+import 'package:spartacus_project/pages/search_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -236,8 +237,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: () {
         switch (_currentIndex) {
           case 0:
-            return const Center(
-              child: Text('Search'),
+            return SearchPage(
+              jsonAvailableSongs: jsonAvailableSongs,
+              jsonAvailableAlbums: jsonAvailableAlbums,
+              changeCurrentSong: changeCurrentSong,
+              changeCurrentIndex: changeCurrentIndex,
             );
           case 1:
             return const Center(
@@ -250,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
           case 3:
             return CurrentSongPage(
               currentSong: currentSong,
-              jsonAvailableSongs: jsonAvailableSongs,
+              currentArtist: currentArtist,
               playAudio: playAudio,
               pauseAudio: pauseAudio,
               initAudio: initAudio,
