@@ -98,8 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return CurrentSongCard(
                   audioPlayerController: audioPlayerController,
                   changeCurrentIndex: changeCurrentIndex,
-                  position:
-                      position, // Pass the current position to CurrentSongCard
+                  position: position,
                 );
               },
             ),
@@ -123,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedColor: Colors.purpleAccent,
               ),
 
-              /// Profile
+              /// Favorites
               SalomonBottomBarItem(
                 icon: const Icon(Icons.favorite),
                 title: const Text("Favorites"),

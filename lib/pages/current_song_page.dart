@@ -38,10 +38,13 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                 style: const TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 20),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 700),
-                child: Image(
-                  image: widget.audioPlayerController.currentCover,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Image(
+                    image: widget.audioPlayerController.currentCover,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
