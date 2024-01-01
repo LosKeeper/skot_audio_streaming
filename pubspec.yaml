@@ -45,6 +45,7 @@ dependencies:
   just_audio_background: ^0.0.1-beta.11
   shared_preferences: ^2.2.2
   just_audio_web: ^0.4.9
+  audio_service: ^0.18.12
 
 dev_dependencies:
   flutter_test:
