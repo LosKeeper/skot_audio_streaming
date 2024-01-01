@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:audio_service/audio_service.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
@@ -13,12 +14,24 @@ import 'package:spartacus_project/pages/home_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var quality = await loadQuality();
-  runApp(MyApp(quality: quality));
+  var audioPlayerController = await AudioService.init(
+    builder: () => AudioPlayerController(
+      quality: quality,
+    ),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.mycompany.myapp.audio',
+      androidNotificationChannelName: 'Spartacus Project Audio Service',
+      androidNotificationOngoing: true,
+    ),
+  );
+  runApp(MyApp(quality: quality, audioPlayerController: audioPlayerController));
 }
 
 class MyApp extends StatelessWidget {
   final int quality;
-  const MyApp({super.key, required this.quality});
+  final AudioPlayerController audioPlayerController;
+  const MyApp(
+      {super.key, required this.quality, required this.audioPlayerController});
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +45,24 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'LKP Streaming', quality: quality),
+      home: MyHomePage(
+          title: 'LKP Streaming',
+          quality: quality,
+          audioPlayerController: audioPlayerController),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.quality});
+  const MyHomePage(
+      {super.key,
+      required this.title,
+      required this.quality,
+      required this.audioPlayerController});
 
   final String title;
   final int quality;
+  final AudioPlayerController audioPlayerController;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -49,7 +70,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
-  late AudioPlayerController audioPlayerController;
 
   Future<void> changeCurrentIndex(int newIndex) async {
     setState(() {
@@ -60,15 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    audioPlayerController = AudioPlayerController(
-      quality: widget.quality,
-    );
-    audioPlayerController.init();
+    widget.audioPlayerController.init();
   }
 
   @override
   void dispose() {
-    audioPlayerController.player.dispose();
+    widget.audioPlayerController.player.dispose();
     super.dispose();
   }
 
@@ -125,16 +142,17 @@ class _MyHomePageState extends State<MyHomePage> {
             switch (_currentIndex) {
               case 0:
                 return SearchPage(
-                  jsonAvailableSongs:
-                      audioPlayerController.requestManager.jsonAvailableSongs,
-                  jsonAvailableAlbums:
-                      audioPlayerController.requestManager.jsonAvailableAlbums,
-                  changeCurrentSong: audioPlayerController.changeCurrentSong,
+                  jsonAvailableSongs: widget
+                      .audioPlayerController.requestManager.jsonAvailableSongs,
+                  jsonAvailableAlbums: widget
+                      .audioPlayerController.requestManager.jsonAvailableAlbums,
+                  changeCurrentSong:
+                      widget.audioPlayerController.changeCurrentSong,
                   changeCurrentIndex: changeCurrentIndex,
                 );
               case 1:
                 return HomePage(
-                  audioPlayerController: audioPlayerController,
+                  audioPlayerController: widget.audioPlayerController,
                 );
 
               case 2:
@@ -143,18 +161,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               case 3:
                 return StreamBuilder<double>(
-                    stream: audioPlayerController.positionStream,
+                    stream: widget.audioPlayerController.positionStream,
                     builder: (context, snapshot) {
                       double position = snapshot.data ?? 0.0;
                       return CurrentSongPage(
-                        audioPlayerController: audioPlayerController,
+                        audioPlayerController: widget.audioPlayerController,
                         position: position,
                       );
                     });
               case 4:
                 return SettingsPage(
-                  quality: audioPlayerController.quality,
-                  changeQuality: audioPlayerController.changeQuality,
+                  quality: widget.audioPlayerController.quality,
+                  changeQuality: widget.audioPlayerController.changeQuality,
                 );
               default:
                 return Container();
@@ -167,14 +185,14 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (audioPlayerController.currentSong != '' &&
+                if (widget.audioPlayerController.currentSong != '' &&
                     _currentIndex != 3)
                   StreamBuilder<double>(
-                    stream: audioPlayerController.positionStream,
+                    stream: widget.audioPlayerController.positionStream,
                     builder: (context, snapshot) {
                       double position = snapshot.data ?? 0.0;
                       return CurrentSongCard(
-                        audioPlayerController: audioPlayerController,
+                        audioPlayerController: widget.audioPlayerController,
                         changeCurrentIndex: changeCurrentIndex,
                         position: position,
                       );
