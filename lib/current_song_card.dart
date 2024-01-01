@@ -17,17 +17,14 @@ class CurrentSongCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-      ),
+    return SizedBox(
       height: 80,
       child: InkWell(
         borderRadius: BorderRadius.circular(7),
         onTap: () => changeCurrentIndex(3),
         child: Card(
           color: (audioPlayerController.dominantColor ?? Colors.green)
-              .withOpacity(0.5),
+              .withOpacity(0.8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

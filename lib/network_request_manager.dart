@@ -11,6 +11,13 @@ class RequestManager {
   RequestManager(
       {required this.availableSongsUrl, required this.availableAlbumsUrl});
 
+  Future<void> fillAvailableSongsAndAlbums() async {
+    jsonAvailableSongs = await getRequestSongs();
+    jsonAvailableAlbums = await getRequestAlbums();
+    jsonAvailableSongs = sortJsonByDate(jsonAvailableSongs);
+    jsonAvailableAlbums = sortJsonByDate(jsonAvailableAlbums);
+  }
+
   Future<Map<String, dynamic>> getRequestSongs() async {
     var response = await http.get(Uri.parse(availableSongsUrl));
     var json = jsonDecode(response.body);
@@ -23,8 +30,16 @@ class RequestManager {
     return json;
   }
 
-  Future<void> fillAvailableSongsAndAlbums() async {
-    jsonAvailableSongs = await getRequestSongs();
-    jsonAvailableAlbums = await getRequestAlbums();
+  Map<String, dynamic> sortJsonByDate(Map<String, dynamic> jsonData) {
+    List<MapEntry<String, dynamic>> itemList = jsonData.entries.toList();
+
+    itemList.sort((a, b) => b.value['date'].compareTo(a.value['date']));
+
+    Map<String, dynamic> sortedData = {};
+    for (var itemEntry in itemList) {
+      sortedData[itemEntry.key] = itemEntry.value;
+    }
+
+    return sortedData;
   }
 }

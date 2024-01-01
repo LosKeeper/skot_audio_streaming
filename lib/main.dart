@@ -90,19 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (audioPlayerController.currentSong != '' && _currentIndex != 3)
-            StreamBuilder<double>(
-              stream: audioPlayerController.positionStream,
-              builder: (context, snapshot) {
-                double position = snapshot.data ?? 0.0;
-                return CurrentSongCard(
-                  audioPlayerController: audioPlayerController,
-                  changeCurrentIndex: changeCurrentIndex,
-                  position: position,
-                );
-              },
-            ),
-
           // Bottom bar
           SalomonBottomBar(
             currentIndex: _currentIndex,
@@ -132,47 +119,67 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: () {
-        switch (_currentIndex) {
-          case 0:
-            return SearchPage(
-              jsonAvailableSongs:
-                  audioPlayerController.requestManager.jsonAvailableSongs,
-              jsonAvailableAlbums:
-                  audioPlayerController.requestManager.jsonAvailableAlbums,
-              changeCurrentSong: audioPlayerController.changeCurrentSong,
-              changeCurrentIndex: changeCurrentIndex,
-            );
-          case 1:
-            return HomePage(
-              audioPlayerController: audioPlayerController,
-            );
+      body: Stack(
+        children: [
+          () {
+            switch (_currentIndex) {
+              case 0:
+                return SearchPage(
+                  jsonAvailableSongs:
+                      audioPlayerController.requestManager.jsonAvailableSongs,
+                  jsonAvailableAlbums:
+                      audioPlayerController.requestManager.jsonAvailableAlbums,
+                  changeCurrentSong: audioPlayerController.changeCurrentSong,
+                  changeCurrentIndex: changeCurrentIndex,
+                );
+              case 1:
+                return HomePage(
+                  audioPlayerController: audioPlayerController,
+                );
 
-          case 2:
-            return const Center(
-              child: Text('Favorites'),
-            );
-          case 3:
-            return StreamBuilder<double>(
-                stream: audioPlayerController.positionStream,
-                builder: (context, snapshot) {
-                  double position = snapshot.data ?? 0.0;
-                  return CurrentSongPage(
-                    audioPlayerController: audioPlayerController,
-                    position: position,
-                  );
-                });
-          case 4:
-            return SettingsPage(
-              quality: audioPlayerController.quality,
-              changeQuality: audioPlayerController.changeQuality,
-            );
-          default:
-            return const Center(
-              child: Text('Error'),
-            );
-        }
-      }(),
+              case 2:
+                return const Center(
+                  child: Text('Favorites'),
+                );
+              case 3:
+                return StreamBuilder<double>(
+                    stream: audioPlayerController.positionStream,
+                    builder: (context, snapshot) {
+                      double position = snapshot.data ?? 0.0;
+                      return CurrentSongPage(
+                        audioPlayerController: audioPlayerController,
+                        position: position,
+                      );
+                    });
+              default:
+                return Container();
+            }
+          }(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (audioPlayerController.currentSong != '' &&
+                    _currentIndex != 3)
+                  StreamBuilder<double>(
+                    stream: audioPlayerController.positionStream,
+                    builder: (context, snapshot) {
+                      double position = snapshot.data ?? 0.0;
+                      return CurrentSongCard(
+                        audioPlayerController: audioPlayerController,
+                        changeCurrentIndex: changeCurrentIndex,
+                        position: position,
+                      );
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
