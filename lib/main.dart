@@ -151,6 +151,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         position: position,
                       );
                     });
+              case 4:
+                return SettingsPage(
+                  quality: audioPlayerController.quality,
+                  changeQuality: audioPlayerController.changeQuality,
+                );
               default:
                 return Container();
             }
