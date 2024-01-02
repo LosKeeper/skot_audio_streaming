@@ -10,6 +10,7 @@ import 'package:spartacus_project/pages/current_song_page.dart';
 import 'package:spartacus_project/pages/settings_page.dart';
 import 'package:spartacus_project/pages/search_page.dart';
 import 'package:spartacus_project/pages/home_page.dart';
+import 'package:spartacus_project/pages/album_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,10 +71,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
+  String _albumRequested = '';
 
   Future<void> changeCurrentIndex(int newIndex) async {
     setState(() {
       _currentIndex = newIndex;
+    });
+  }
+
+  Future<void> changeAlbumRequested(String albumRequested) async {
+    setState(() {
+      _albumRequested = albumRequested;
     });
   }
 
@@ -149,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   changeCurrentSong:
                       widget.audioPlayerController.changeCurrentSong,
                   changeCurrentIndex: changeCurrentIndex,
+                  changeAlbumRequested: changeAlbumRequested,
                 );
               case 1:
                 return HomePage(
@@ -173,6 +182,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 return SettingsPage(
                   quality: widget.audioPlayerController.quality,
                   changeQuality: widget.audioPlayerController.changeQuality,
+                );
+              case 5:
+                return AlbumPage(
+                  jsonAvailableSongs: widget
+                      .audioPlayerController.requestManager.jsonAvailableSongs,
+                  jsonAvailableAlbums: widget
+                      .audioPlayerController.requestManager.jsonAvailableAlbums,
+                  albumRequested: _albumRequested,
+                  changeCurrentIndex: changeCurrentIndex,
+                  audioPlayerController: widget.audioPlayerController,
                 );
               default:
                 return Container();

@@ -10,7 +10,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
       child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SizedBox(
@@ -36,6 +37,7 @@ class HomePage extends StatelessWidget {
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(16.0),
+                    //TODO: Change the text by a text from the server
                     child: Text(
                       'The future of the music is near. You can\'t imagine how lucky you are to see this !',
                       style: TextStyle(fontSize: 16, color: Colors.black),
@@ -65,6 +67,7 @@ class HomePage extends StatelessWidget {
                             crossAxisCount: 2,
                             childAspectRatio: 1,
                             children: List.generate(2, (index) {
+                              //TODO: Chnage the index by wanted song from the server
                               return Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -106,7 +109,8 @@ class HomePage extends StatelessWidget {
                                                         .jsonAvailableSongs
                                                         .keys
                                                         .toList()[index]);
-                                            audioPlayerController.playAudio();
+                                            await audioPlayerController
+                                                .playAudio();
                                           },
                                         ),
                                       ),

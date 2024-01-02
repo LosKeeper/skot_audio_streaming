@@ -7,13 +7,15 @@ class SearchPage extends StatelessWidget {
   final Map<String, dynamic> jsonAvailableAlbums;
   final Function changeCurrentSong;
   final Function changeCurrentIndex;
+  final Function changeAlbumRequested;
 
   const SearchPage(
       {super.key,
       required this.jsonAvailableSongs,
       required this.jsonAvailableAlbums,
       required this.changeCurrentSong,
-      required this.changeCurrentIndex});
+      required this.changeCurrentIndex,
+      required this.changeAlbumRequested});
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,8 @@ class SearchPage extends StatelessWidget {
                               changeCurrentSong(combined[index].toString());
                               changeCurrentIndex(3);
                             } else {
-                              //TODO: implement album selection
+                              changeAlbumRequested(combined[index].toString());
+                              changeCurrentIndex(5);
                             }
                           });
                     }),
@@ -106,12 +109,12 @@ class SearchPage extends StatelessWidget {
               crossAxisCount: 2,
               childAspectRatio: 1,
               children: List.generate(jsonAvailableAlbums.length, (index) {
-                //TODO: Sort albums by date
                 return InkWell(
+                  borderRadius: BorderRadius.circular(15),
                   onTap: () {
-                    //TODO: implement album selection
-                    print(
-                        '${jsonAvailableAlbums.keys.toList()[index]} album requested');
+                    changeAlbumRequested(
+                        jsonAvailableAlbums.keys.toList()[index].toString());
+                    changeCurrentIndex(5);
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -177,6 +180,7 @@ class SearchPage extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 100),
       ]),
     );
   }
