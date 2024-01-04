@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-String url = 'http://loskeeper.fr:42024';
+String url = 'https://loskeeper.fr:42024';
 
 String availableSongsUrl = '$url/audio/available_songs.json';
 String availableAlbumsUrl = '$url/audio/available_albums.json';
