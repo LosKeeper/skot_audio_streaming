@@ -11,6 +11,7 @@
 5. [Usage](#usage)
 6. [Contributing](#contributing)
 7. [License](#license)
+8. [TODO](#todo)
 
 ## Introduction
 This is a top secret project.  It is so secret that we can't even tell you what it is.  But it is awesome.
@@ -34,3 +35,7 @@ For the moment, we are not accepting contributions. Maybe in the future.
 
 ## License
 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
+
+## TODO
+- [ ] Add favorites
+- [ ] Add communication with other audio apps for Android
