@@ -68,12 +68,12 @@ class CurrentSongCard extends StatelessWidget {
                     ],
                   ),
                   IconButton(
-                    icon: Icon(audioPlayerController.isPlaying
+                    icon: Icon(audioPlayerController.player.playing
                         ? Icons.pause
                         : Icons.play_arrow),
-                    onPressed: audioPlayerController.isPlaying
-                        ? () => audioPlayerController.pauseAudio()
-                        : () => audioPlayerController.playAudio(),
+                    onPressed: audioPlayerController.player.playing
+                        ? () => audioPlayerController.pause()
+                        : () => audioPlayerController.play(),
                   ),
                 ],
               ),

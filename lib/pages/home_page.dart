@@ -102,15 +102,14 @@ class HomePage extends StatelessWidget {
                                         child: IconButton(
                                           icon: const Icon(Icons.play_arrow),
                                           onPressed: () async {
-                                            await audioPlayerController
+                                            audioPlayerController
                                                 .changeCurrentSong(
                                                     audioPlayerController
                                                         .requestManager
                                                         .jsonAvailableSongs
                                                         .keys
                                                         .toList()[index]);
-                                            await audioPlayerController
-                                                .playAudio();
+                                            audioPlayerController.play();
                                           },
                                         ),
                                       ),

@@ -28,7 +28,6 @@ class AudioPlayerController extends BaseAudioHandler {
     album: 'default',
     artUri: null,
   );
-  bool isPlaying = false;
   double currentPosition = 0.0;
   double bufferedPosition = 0.0;
   double maxDuration = 1.0;
@@ -40,10 +39,37 @@ class AudioPlayerController extends BaseAudioHandler {
   String currentSong = '';
   bool jsonLoaded = false;
 
+  List<String> previousSongs = [];
+  List<String> nextSongs = [];
+  bool changedSong = false;
+
   int quality = 0;
   AudioPlayerController({
     required this.quality,
-  });
+  }) {
+    player.positionStream.listen((duration) {
+      currentPosition = duration.inMilliseconds.toDouble();
+      maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
+
+      if (player.playing &&
+          currentPosition >= maxDuration &&
+          maxDuration > 0 &&
+          !changedSong) {
+        if (nextSongs.isNotEmpty) {
+          changeCurrentSong(nextSongs[0]);
+          nextSongs.removeAt(0);
+          player.play();
+          changedSong = true;
+        } else {
+          var nextSong = requestManager.jsonAvailableSongs.keys.toList()[
+              Random().nextInt(requestManager.jsonAvailableSongs.length)];
+          changeCurrentSong(nextSong);
+          player.play();
+          changedSong = true;
+        }
+      }
+    });
+  }
 
   Future<void> init() async {
     await initJson();
@@ -55,7 +81,6 @@ class AudioPlayerController extends BaseAudioHandler {
     await requestManager.fillAvailableSongsAndAlbums();
     jsonLoaded = true;
     jsonLoadedController.add(true);
-    currentSong = requestManager.jsonAvailableSongs.keys.toList()[0];
   }
 
   // ignore: duplicate_ignore
@@ -63,6 +88,10 @@ class AudioPlayerController extends BaseAudioHandler {
     // Wait until json is loaded
     while (!jsonLoaded) {
       await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    if (currentSong == '') {
+      return;
     }
 
     currentArtist =
@@ -88,6 +117,7 @@ class AudioPlayerController extends BaseAudioHandler {
       currentPosition = duration.inMilliseconds.toDouble();
       maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
     });
+
     player.bufferedPositionStream.listen((duration) {
       bufferedPosition = min(duration.inMilliseconds.toDouble(), maxDuration);
     });
@@ -108,6 +138,11 @@ class AudioPlayerController extends BaseAudioHandler {
           : null,
       duration: Duration(milliseconds: maxDuration.toInt()),
     );
+
+    previousSongs.add(currentSong);
+    print('Previous songfs list : $previousSongs');
+
+    changedSong = false;
 
     super.mediaItem.add(_mediaItem);
   }
@@ -142,15 +177,17 @@ class AudioPlayerController extends BaseAudioHandler {
   }
 
   Future<void> changeCurrentSong(String newSong) async {
-    isPlaying = false;
     currentSong = newSong;
-    await player.stop();
-    await initAudio();
+    player.stop();
+    initAudio();
+  }
+
+  Future<void> addNextSong(String newSong) async {
+    nextSongs.add(newSong);
   }
 
   Future<void> changeQuality(int newQuality) async {
     player.stop();
-    isPlaying = false;
     quality = newQuality;
     await saveQuality(newQuality);
     initAudio();
@@ -160,27 +197,15 @@ class AudioPlayerController extends BaseAudioHandler {
     await player.seek(Duration(milliseconds: newPosition.toInt()));
   }
 
-  Future<void> playAudio() async {
-    isPlaying = true;
-
-    await player.play();
-  }
-
-  Future<void> pauseAudio() async {
-    isPlaying = false;
-
-    await player.pause();
-  }
-
   @override
   Future<void> play() async {
-    await playAudio();
+    await player.play();
     await super.play();
   }
 
   @override
   Future<void> pause() async {
-    await pauseAudio();
+    await player.pause();
     await super.pause();
   }
 
@@ -192,17 +217,18 @@ class AudioPlayerController extends BaseAudioHandler {
 
   @override
   Future<void> stop() async {
-    await pauseAudio();
+    currentPosition = 0.0;
+    await player.stop();
     await super.stop();
   }
 
   @override
   Future<void> click([MediaButton button = MediaButton.media]) async {
     if (button == MediaButton.media) {
-      if (isPlaying) {
-        await pauseAudio();
+      if (player.playing) {
+        await pause();
       } else {
-        await playAudio();
+        await play();
       }
     }
     await super.click(button);

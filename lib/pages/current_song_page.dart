@@ -80,12 +80,12 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                 ],
               ),
               IconButton(
-                icon: Icon(widget.audioPlayerController.isPlaying
+                icon: Icon(widget.audioPlayerController.player.playing
                     ? Icons.pause
                     : Icons.play_arrow),
-                onPressed: widget.audioPlayerController.isPlaying
-                    ? () => widget.audioPlayerController.pauseAudio()
-                    : () => widget.audioPlayerController.playAudio(),
+                onPressed: widget.audioPlayerController.player.playing
+                    ? () => widget.audioPlayerController.pause()
+                    : () => widget.audioPlayerController.play(),
               ),
             ],
           ),

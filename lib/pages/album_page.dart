@@ -74,12 +74,12 @@ class AlbumPage extends StatelessWidget {
                         '${jsonAvailableAlbums[albumRequested]["songs"][index].keys.first}',
                       ),
                       onTap: () async {
-                        await audioPlayerController.changeCurrentSong(
+                        audioPlayerController.changeCurrentSong(
                             jsonAvailableAlbums[albumRequested]["songs"][index]
                                 .keys
                                 .first);
-                        await audioPlayerController.playAudio();
-                        await changeCurrentIndex(3);
+                        audioPlayerController.play();
+                        changeCurrentIndex(3);
                       },
                     ),
                   );
