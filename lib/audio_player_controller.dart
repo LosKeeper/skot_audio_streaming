@@ -58,13 +58,11 @@ class AudioPlayerController extends BaseAudioHandler {
         if (nextSongs.isNotEmpty) {
           changeCurrentSong(nextSongs[0]);
           nextSongs.removeAt(0);
-          player.play();
           changedSong = true;
         } else {
           var nextSong = requestManager.jsonAvailableSongs.keys.toList()[
               Random().nextInt(requestManager.jsonAvailableSongs.length)];
           changeCurrentSong(nextSong);
-          player.play();
           changedSong = true;
         }
       }
@@ -139,10 +137,16 @@ class AudioPlayerController extends BaseAudioHandler {
       duration: Duration(milliseconds: maxDuration.toInt()),
     );
 
-    previousSongs.add(currentSong);
-    print('Previous songfs list : $previousSongs');
+    if (previousSongs.isEmpty) {
+      previousSongs.add(currentSong);
+    } else if (previousSongs.last != currentSong) {
+      previousSongs.add(currentSong);
+    }
 
-    changedSong = false;
+    if (changedSong) {
+      changedSong = false;
+      play();
+    }
 
     super.mediaItem.add(_mediaItem);
   }
@@ -156,7 +160,7 @@ class AudioPlayerController extends BaseAudioHandler {
         ] else ...[
           MediaControl.play,
         ],
-        MediaControl.skipToNext,
+        MediaControl.skipToNext
       ],
       systemActions: const {
         MediaAction.seek,
@@ -180,6 +184,8 @@ class AudioPlayerController extends BaseAudioHandler {
     currentSong = newSong;
     player.stop();
     initAudio();
+    // Wait until audio is loaded for windows
+    await Future.delayed(const Duration(milliseconds: 10));
   }
 
   Future<void> addNextSong(String newSong) async {
@@ -220,6 +226,34 @@ class AudioPlayerController extends BaseAudioHandler {
     currentPosition = 0.0;
     await player.stop();
     await super.stop();
+  }
+
+  @override
+  Future<void> skipToNext() async {
+    if (nextSongs.isNotEmpty) {
+      await changeCurrentSong(nextSongs[0]);
+      nextSongs.removeAt(0);
+    } else {
+      await changeCurrentSong(requestManager.jsonAvailableSongs.keys.toList()[
+          Random().nextInt(requestManager.jsonAvailableSongs.length)]);
+    }
+    await Future.delayed(const Duration(milliseconds: 10));
+    await play();
+    await super.skipToNext();
+  }
+
+  @override
+  Future<void> skipToPrevious() async {
+    if (previousSongs.length > 1) {
+      nextSongs.insert(0, previousSongs.last);
+      previousSongs.removeLast();
+      await changeCurrentSong(previousSongs[previousSongs.length - 1]);
+    } else {
+      await changeCurrentSong(currentSong);
+    }
+    await Future.delayed(const Duration(milliseconds: 10));
+    await play();
+    await super.skipToPrevious();
   }
 
   @override

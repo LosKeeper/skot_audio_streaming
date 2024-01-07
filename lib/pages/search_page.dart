@@ -8,6 +8,7 @@ class SearchPage extends StatelessWidget {
   final Function changeCurrentSong;
   final Function changeCurrentIndex;
   final Function changeAlbumRequested;
+  final Function playSong;
 
   const SearchPage(
       {super.key,
@@ -15,7 +16,8 @@ class SearchPage extends StatelessWidget {
       required this.jsonAvailableAlbums,
       required this.changeCurrentSong,
       required this.changeCurrentIndex,
-      required this.changeAlbumRequested});
+      required this.changeAlbumRequested,
+      required this.playSong});
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +74,14 @@ class SearchPage extends StatelessWidget {
                             ),
                           ),
                           leading: const Icon(Icons.music_note),
-                          onTap: () {
+                          onTap: () async {
                             controller.closeView(controller.value.text);
                             controller.clear();
                             if (jsonAvailableSongs[combined[index]] != null) {
-                              changeCurrentSong(combined[index].toString());
+                              await changeCurrentSong(
+                                  combined[index].toString());
                               changeCurrentIndex(3);
+                              playSong();
                             } else {
                               changeAlbumRequested(combined[index].toString());
                               changeCurrentIndex(5);

@@ -79,13 +79,32 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                   ),
                 ],
               ),
-              IconButton(
-                icon: Icon(widget.audioPlayerController.player.playing
-                    ? Icons.pause
-                    : Icons.play_arrow),
-                onPressed: widget.audioPlayerController.player.playing
-                    ? () => widget.audioPlayerController.pause()
-                    : () => widget.audioPlayerController.play(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.skip_previous),
+                    onPressed: () {
+                      widget.audioPlayerController.skipToPrevious();
+                    },
+                  ),
+                  const SizedBox(width: 40),
+                  IconButton(
+                    icon: Icon(widget.audioPlayerController.player.playing
+                        ? Icons.pause
+                        : Icons.play_arrow),
+                    onPressed: widget.audioPlayerController.player.playing
+                        ? () => widget.audioPlayerController.pause()
+                        : () => widget.audioPlayerController.play(),
+                  ),
+                  const SizedBox(width: 40),
+                  IconButton(
+                    icon: const Icon(Icons.skip_next),
+                    onPressed: () {
+                      widget.audioPlayerController.skipToNext();
+                    },
+                  ),
+                ],
               ),
             ],
           ),

@@ -9,6 +9,7 @@ class AlbumPage extends StatelessWidget {
   final String albumRequested;
   final Function changeCurrentIndex;
   final AudioPlayerController audioPlayerController;
+  final Function addToPlaylist;
 
   const AlbumPage(
       {super.key,
@@ -16,7 +17,8 @@ class AlbumPage extends StatelessWidget {
       required this.jsonAvailableAlbums,
       required this.albumRequested,
       required this.changeCurrentIndex,
-      required this.audioPlayerController});
+      required this.audioPlayerController,
+      required this.addToPlaylist});
 
   @override
   Widget build(BuildContext context) {
@@ -74,12 +76,59 @@ class AlbumPage extends StatelessWidget {
                         '${jsonAvailableAlbums[albumRequested]["songs"][index].keys.first}',
                       ),
                       onTap: () async {
-                        audioPlayerController.changeCurrentSong(
+                        await audioPlayerController.changeCurrentSong(
                             jsonAvailableAlbums[albumRequested]["songs"][index]
                                 .keys
                                 .first);
                         audioPlayerController.play();
                         changeCurrentIndex(3);
+                      },
+                      onLongPress: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              content: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                height: MediaQuery.of(context).size.height / 2,
+                                child: Center(
+                                  child: Material(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(4.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        ListTile(
+                                          leading:
+                                              const Icon(Icons.playlist_add),
+                                          title: const Text('Add to playlist'),
+                                          onTap: () {
+                                            addToPlaylist(jsonAvailableAlbums[
+                                                        albumRequested]["songs"]
+                                                    [index]
+                                                .keys
+                                                .first);
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.favorite),
+                                          title: const Text('Add to favorites'),
+                                          onTap: () {
+                                            //TODO: Add to favorites
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                   );

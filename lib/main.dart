@@ -158,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       widget.audioPlayerController.changeCurrentSong,
                   changeCurrentIndex: changeCurrentIndex,
                   changeAlbumRequested: changeAlbumRequested,
+                  playSong: widget.audioPlayerController.play,
                 );
               case 1:
                 return HomePage(
@@ -192,6 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   albumRequested: _albumRequested,
                   changeCurrentIndex: changeCurrentIndex,
                   audioPlayerController: widget.audioPlayerController,
+                  addToPlaylist: widget.audioPlayerController.addNextSong,
                 );
               default:
                 return Container();
