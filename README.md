@@ -37,5 +37,7 @@ For the moment, we are not accepting contributions. Maybe in the future.
 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
 ## TODO
-- [ ] Add favorites
+- [x] Add favorites
 - [ ] Add communication with other audio apps for Android
+- [ ] Add message from the server on main page
+- [ ] Add selection of the artist

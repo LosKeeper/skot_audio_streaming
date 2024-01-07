@@ -10,6 +10,7 @@ class AlbumPage extends StatelessWidget {
   final Function changeCurrentIndex;
   final AudioPlayerController audioPlayerController;
   final Function addToPlaylist;
+  final Function addToFavorites;
 
   const AlbumPage(
       {super.key,
@@ -18,7 +19,8 @@ class AlbumPage extends StatelessWidget {
       required this.albumRequested,
       required this.changeCurrentIndex,
       required this.audioPlayerController,
-      required this.addToPlaylist});
+      required this.addToPlaylist,
+      required this.addToFavorites});
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +119,11 @@ class AlbumPage extends StatelessWidget {
                                           leading: const Icon(Icons.favorite),
                                           title: const Text('Add to favorites'),
                                           onTap: () {
-                                            //TODO: Add to favorites
+                                            addToFavorites(jsonAvailableAlbums[
+                                                        albumRequested]["songs"]
+                                                    [index]
+                                                .keys
+                                                .first);
                                             Navigator.of(context).pop();
                                           },
                                         ),

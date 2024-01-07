@@ -11,10 +11,12 @@ import 'package:spartacus_project/pages/settings_page.dart';
 import 'package:spartacus_project/pages/search_page.dart';
 import 'package:spartacus_project/pages/home_page.dart';
 import 'package:spartacus_project/pages/album_page.dart';
+import 'package:spartacus_project/pages/favorites_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var quality = await loadQuality();
+  int quality = await loadQuality();
+  List<String> favorites = await loadFavorites();
   var audioPlayerController = await AudioService.init(
     builder: () => AudioPlayerController(
       quality: quality,
@@ -25,14 +27,21 @@ void main() async {
       androidNotificationOngoing: true,
     ),
   );
-  runApp(MyApp(quality: quality, audioPlayerController: audioPlayerController));
+  runApp(MyApp(
+      quality: quality,
+      favorites: favorites,
+      audioPlayerController: audioPlayerController));
 }
 
 class MyApp extends StatelessWidget {
   final int quality;
   final AudioPlayerController audioPlayerController;
+  final List<String> favorites;
   const MyApp(
-      {super.key, required this.quality, required this.audioPlayerController});
+      {super.key,
+      required this.quality,
+      required this.audioPlayerController,
+      required this.favorites});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +58,8 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
           title: 'LKP Streaming',
           quality: quality,
-          audioPlayerController: audioPlayerController),
+          audioPlayerController: audioPlayerController,
+          favorites: favorites),
     );
   }
 }
@@ -59,11 +69,13 @@ class MyHomePage extends StatefulWidget {
       {super.key,
       required this.title,
       required this.quality,
+      required this.favorites,
       required this.audioPlayerController});
 
   final String title;
   final int quality;
   final AudioPlayerController audioPlayerController;
+  final List<String> favorites;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -72,6 +84,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
   String _albumRequested = '';
+  List<String> _favorites = [];
 
   Future<void> changeCurrentIndex(int newIndex) async {
     setState(() {
@@ -85,9 +98,32 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> addToFavorites(String song) async {
+    setState(() {
+      if (_favorites.contains(song)) {
+        return;
+      } else {
+        _favorites.add(song);
+      }
+    });
+    await saveFavorites(_favorites);
+  }
+
+  Future<void> removeFromFavorites(String song) async {
+    setState(() {
+      if (_favorites.contains(song)) {
+        _favorites.remove(song);
+      } else {
+        return;
+      }
+    });
+    await saveFavorites(_favorites);
+  }
+
   @override
   void initState() {
     super.initState();
+    _favorites = widget.favorites;
     widget.audioPlayerController.init();
   }
 
@@ -166,8 +202,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
 
               case 2:
-                return const Center(
-                  child: Text('Favorites'),
+                return FavoritesPage(
+                  favorites: _favorites,
+                  changeCurrentSong:
+                      widget.audioPlayerController.changeCurrentSong,
+                  play: widget.audioPlayerController.play,
+                  removeFavorite: removeFromFavorites,
+                  addToPlaylist: widget.audioPlayerController.addNextSong,
+                  jsonAvailableSongs: widget
+                      .audioPlayerController.requestManager.jsonAvailableSongs,
                 );
               case 3:
                 return StreamBuilder<double>(
@@ -194,6 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   changeCurrentIndex: changeCurrentIndex,
                   audioPlayerController: widget.audioPlayerController,
                   addToPlaylist: widget.audioPlayerController.addNextSong,
+                  addToFavorites: addToFavorites,
                 );
               default:
                 return Container();

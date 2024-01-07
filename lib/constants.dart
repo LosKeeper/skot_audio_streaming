@@ -28,3 +28,14 @@ Future<int> loadQuality() async {
   final quality = prefs.getInt('quality');
   return quality ?? 0;
 }
+
+Future<List<String>> loadFavorites() async {
+  final prefs = await SharedPreferences.getInstance();
+  final favorites = prefs.getStringList('favorites');
+  return favorites ?? [];
+}
+
+Future<void> saveFavorites(List<String> favorites) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setStringList('favorites', favorites);
+}
