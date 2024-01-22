@@ -41,3 +41,7 @@ For the moment, we are not accepting contributions. Maybe in the future.
 - [ ] Add communication with other audio apps for Android
 - [ ] Add message from the server on main page
 - [ ] Add selection of the artist
+- [ ] Delay first song
+- [ ] Selection -> Current Playing
+- [x] Manage android return button
+- [ ] Download songs for offline use
