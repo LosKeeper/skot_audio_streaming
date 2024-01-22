@@ -21,6 +21,8 @@ class AudioPlayerController extends BaseAudioHandler {
   RequestManager requestManager = RequestManager(
     availableSongsUrl: '$url/audio/available_songs.json',
     availableAlbumsUrl: '$url/audio/available_albums.json',
+    messagesUrl: '$url/audio/messages.json',
+    selectionUrl: '$url/audio/selection.json',
   );
   MediaItem _mediaItem = const MediaItem(
     id: 'default',

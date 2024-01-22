@@ -35,12 +35,27 @@ class HomePage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    //TODO: Change the text by a text from the server
-                    child: Text(
-                      'The future of the music is near. You can\'t imagine how lucky you are to see this !',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: StreamBuilder<bool>(
+                      stream: audioPlayerController.jsonLoadedController.stream,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData &&
+                            audioPlayerController.jsonLoaded == false) {
+                          return const Text(
+                            'Loading...',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          );
+                        } else {
+                          return Text(
+                            audioPlayerController
+                                .requestManager.listMessages[0]["message"]
+                                .toString(),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black),
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -67,7 +82,6 @@ class HomePage extends StatelessWidget {
                             crossAxisCount: 2,
                             childAspectRatio: 1,
                             children: List.generate(2, (index) {
-                              //TODO: Chnage the index by wanted song from the server
                               return Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -80,7 +94,7 @@ class HomePage extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                             image: NetworkImage(
-                                              '$url/${audioPlayerController.requestManager.jsonAvailableSongs[audioPlayerController.requestManager.jsonAvailableSongs.keys.toList()[index]]['cover_path']}',
+                                              '$url/${audioPlayerController.requestManager.jsonAvailableSongs[audioPlayerController.requestManager.listSelection[index]]['cover_path']}',
                                             ),
                                           ),
                                         ),
@@ -106,9 +120,7 @@ class HomePage extends StatelessWidget {
                                                 .changeCurrentSong(
                                                     audioPlayerController
                                                         .requestManager
-                                                        .jsonAvailableSongs
-                                                        .keys
-                                                        .toList()[index]);
+                                                        .listSelection[index]);
                                             audioPlayerController.play();
                                           },
                                         ),
@@ -125,9 +137,7 @@ class HomePage extends StatelessWidget {
                                               Text(
                                                 audioPlayerController
                                                     .requestManager
-                                                    .jsonAvailableSongs
-                                                    .keys
-                                                    .toList()[index]
+                                                    .listSelection[index]
                                                     .toString(),
                                                 style: const TextStyle(
                                                   fontSize: 20,
@@ -140,11 +150,9 @@ class HomePage extends StatelessWidget {
                                                     .requestManager
                                                     .jsonAvailableSongs[
                                                         audioPlayerController
-                                                            .requestManager
-                                                            .jsonAvailableSongs
-                                                            .keys
-                                                            .toList()[index]]
-                                                        ['artist']
+                                                                .requestManager
+                                                                .listSelection[
+                                                            index]]['artist']
                                                     .toString(),
                                                 style: const TextStyle(
                                                   fontSize: 15,

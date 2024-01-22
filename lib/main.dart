@@ -209,8 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 case 1:
                   return HomePage(
-                    audioPlayerController: widget.audioPlayerController,
-                  );
+                      audioPlayerController: widget.audioPlayerController);
 
                 case 2:
                   return FavoritesPage(

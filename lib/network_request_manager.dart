@@ -4,16 +4,25 @@ import 'package:http/http.dart' as http;
 class RequestManager {
   final String availableSongsUrl;
   final String availableAlbumsUrl;
+  final String messagesUrl;
+  final String selectionUrl;
 
   Map<String, dynamic> jsonAvailableSongs = {};
   Map<String, dynamic> jsonAvailableAlbums = {};
+  List<dynamic> listMessages = [];
+  List<String> listSelection = [];
 
   RequestManager(
-      {required this.availableSongsUrl, required this.availableAlbumsUrl});
+      {required this.availableSongsUrl,
+      required this.availableAlbumsUrl,
+      required this.messagesUrl,
+      required this.selectionUrl});
 
   Future<void> fillAvailableSongsAndAlbums() async {
     jsonAvailableSongs = await getRequestSongs();
     jsonAvailableAlbums = await getRequestAlbums();
+    listMessages = await getMessages();
+    listSelection = await getSelection();
     jsonAvailableSongs = sortJsonByDate(jsonAvailableSongs);
     jsonAvailableAlbums = sortJsonByDate(jsonAvailableAlbums);
   }
@@ -41,5 +50,20 @@ class RequestManager {
     }
 
     return sortedData;
+  }
+
+  Future<List<dynamic>> getMessages() async {
+    var response = await http.get(Uri.parse(messagesUrl));
+    var json = jsonDecode(response.body);
+    listMessages = json;
+    return listMessages;
+  }
+
+  Future<List<String>> getSelection() async {
+    var response = await http.get(Uri.parse(selectionUrl));
+    var json = jsonDecode(response.body);
+    List<String> titles =
+        json.map<String>((item) => item['title'].toString()).toList();
+    return titles;
   }
 }
