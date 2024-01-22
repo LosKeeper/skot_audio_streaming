@@ -39,3 +39,14 @@ Future<void> saveFavorites(List<String> favorites) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setStringList('favorites', favorites);
 }
+
+Future<int> loadLastIdMsg() async {
+  final prefs = await SharedPreferences.getInstance();
+  final lastIdMsg = prefs.getInt('lastIdMsg');
+  return lastIdMsg ?? 0;
+}
+
+Future<void> saveLastIdMsg(int lastIdMsg) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('lastIdMsg', lastIdMsg);
+}

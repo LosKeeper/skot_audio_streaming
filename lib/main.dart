@@ -16,6 +16,7 @@ import 'package:spartacus_project/pages/favorites_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   int quality = await loadQuality();
+  int lastIdMsg = await loadLastIdMsg();
   List<String> favorites = await loadFavorites();
   var audioPlayerController = await AudioService.init(
     builder: () => AudioPlayerController(
@@ -30,18 +31,21 @@ void main() async {
   runApp(MyApp(
       quality: quality,
       favorites: favorites,
-      audioPlayerController: audioPlayerController));
+      audioPlayerController: audioPlayerController,
+      lastIdMsg: lastIdMsg));
 }
 
 class MyApp extends StatelessWidget {
   final int quality;
   final AudioPlayerController audioPlayerController;
   final List<String> favorites;
+  final int lastIdMsg;
   const MyApp(
       {super.key,
       required this.quality,
       required this.audioPlayerController,
-      required this.favorites});
+      required this.favorites,
+      required this.lastIdMsg});
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +60,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: MyHomePage(
-          title: 'LKP Streaming',
-          quality: quality,
-          audioPlayerController: audioPlayerController,
-          favorites: favorites),
+        title: 'LKP Streaming',
+        quality: quality,
+        audioPlayerController: audioPlayerController,
+        favorites: favorites,
+        lastIdMsg: lastIdMsg,
+      ),
     );
   }
 }
@@ -70,10 +76,12 @@ class MyHomePage extends StatefulWidget {
       required this.title,
       required this.quality,
       required this.favorites,
-      required this.audioPlayerController});
+      required this.audioPlayerController,
+      required this.lastIdMsg});
 
   final String title;
   final int quality;
+  final int lastIdMsg;
   final AudioPlayerController audioPlayerController;
   final List<String> favorites;
 
@@ -125,6 +133,48 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _favorites = widget.favorites;
     widget.audioPlayerController.init();
+    widget.audioPlayerController.requestManager
+        .getMessages()
+        .then((listMessages) {
+      if (widget.lastIdMsg < listMessages.last["id"]) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showDialog();
+          saveLastIdMsg(listMessages.last["id"]);
+        });
+      }
+    });
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: widget
+                  .audioPlayerController.requestManager.listMessages.isNotEmpty
+              ? Text(
+                  widget.audioPlayerController.requestManager.listMessages
+                      .last["title"],
+                  style: const TextStyle(fontSize: 24),
+                )
+              : const Text(''),
+          content: widget
+                  .audioPlayerController.requestManager.listMessages.isNotEmpty
+              ? Text(
+                  widget.audioPlayerController.requestManager.listMessages
+                      .last["message"],
+                  style: const TextStyle(fontSize: 16),
+                )
+              : const Text(''),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
