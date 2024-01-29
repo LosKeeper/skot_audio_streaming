@@ -46,3 +46,5 @@ For the moment, we are not accepting contributions. Maybe in the future.
 - [ ] Selection -> Current Playing
 - [x] Manage android return button
 - [ ] Download songs for offline use
+- [x] Add notification
+- [ ] Add ECO quality

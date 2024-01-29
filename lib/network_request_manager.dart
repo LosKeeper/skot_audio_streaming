@@ -1,5 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:background_fetch/background_fetch.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+
+import 'package:spartacus_project/constants.dart';
 
 class RequestManager {
   final String availableSongsUrl;
@@ -16,7 +20,9 @@ class RequestManager {
       {required this.availableSongsUrl,
       required this.availableAlbumsUrl,
       required this.messagesUrl,
-      required this.selectionUrl});
+      required this.selectionUrl}) {
+    initBackgroundFetch();
+  }
 
   Future<void> fillAvailableSongsAndAlbums() async {
     jsonAvailableSongs = await getRequestSongs();
@@ -65,5 +71,50 @@ class RequestManager {
     List<String> titles =
         json.map<String>((item) => item['title'].toString()).toList();
     return titles;
+  }
+
+  Future<void> printNotification() async {
+    // Retrieve the ID of the last notification received
+    int? lastNotificationId = await loadLastIdMsg();
+    print(lastNotificationId);
+
+    // Update the notification from the server
+    listMessages = await getMessages();
+
+    if (lastNotificationId < listMessages.last['id']) {
+      // Save the ID of the last notification received
+      await saveLastIdMsg(listMessages.last['id']);
+
+      // Display the notification
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: listMessages.last['id'],
+          channelKey: 'basic_channel',
+          title: listMessages.last['title'],
+          body: listMessages.last['message'],
+        ),
+      );
+    }
+  }
+
+  void initBackgroundFetch() {
+    BackgroundFetch.configure(
+      BackgroundFetchConfig(
+        minimumFetchInterval: 15,
+        stopOnTerminate: false,
+        startOnBoot: true,
+        enableHeadless: true,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresStorageNotLow: false,
+        requiresDeviceIdle: false,
+        requiredNetworkType: NetworkType.ANY,
+      ),
+      (String taskId) async {
+        listMessages = await getMessages();
+        await printNotification();
+        BackgroundFetch.finish(taskId);
+      },
+    );
   }
 }

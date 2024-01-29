@@ -19,11 +19,10 @@ class AudioPlayerController extends BaseAudioHandler {
 
   final player = AudioPlayer();
   RequestManager requestManager = RequestManager(
-    availableSongsUrl: '$url/audio/available_songs.json',
-    availableAlbumsUrl: '$url/audio/available_albums.json',
-    messagesUrl: '$url/audio/messages.json',
-    selectionUrl: '$url/audio/selection.json',
-  );
+      availableSongsUrl: '$url/audio/available_songs.json',
+      availableAlbumsUrl: '$url/audio/available_albums.json',
+      messagesUrl: '$url/audio/messages.json',
+      selectionUrl: '$url/audio/selection.json');
   MediaItem _mediaItem = const MediaItem(
     id: 'default',
     title: 'default',
@@ -46,9 +45,8 @@ class AudioPlayerController extends BaseAudioHandler {
   bool changedSong = false;
 
   int quality = 0;
-  AudioPlayerController({
-    required this.quality,
-  }) {
+
+  AudioPlayerController({required this.quality}) {
     player.positionStream.listen((duration) {
       currentPosition = duration.inMilliseconds.toDouble();
       maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
