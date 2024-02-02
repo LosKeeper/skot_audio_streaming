@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:background_fetch/background_fetch.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
 import 'package:spartacus_project/audio_player_controller.dart';
+import 'package:spartacus_project/network_request_manager.dart';
 
 import 'package:spartacus_project/pages/current_song_page.dart';
 import 'package:spartacus_project/pages/settings_page.dart';
@@ -13,6 +15,25 @@ import 'package:spartacus_project/pages/search_page.dart';
 import 'package:spartacus_project/pages/home_page.dart';
 import 'package:spartacus_project/pages/album_page.dart';
 import 'package:spartacus_project/pages/favorites_page.dart';
+
+@pragma('vm:entry-point')
+void backgroundFetchHeadlessTask(HeadlessTask task) async {
+  String taskId = task.taskId;
+  bool isTimeout = task.timeout;
+  if (isTimeout) {
+    // This task has exceeded its allowed running-time.
+    // You must stop what you're doing and immediately .finish(taskId)
+    BackgroundFetch.finish(taskId);
+    return;
+  }
+  var requestManager = RequestManager(
+      availableSongsUrl: '$url/audio/available_songs.json',
+      availableAlbumsUrl: '$url/audio/available_albums.json',
+      messagesUrl: '$url/audio/messages.json',
+      selectionUrl: '$url/audio/selection.json');
+  await requestManager.printNotification();
+  BackgroundFetch.finish(taskId);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +86,8 @@ void main() async {
       favorites: favorites,
       audioPlayerController: audioPlayerController,
       lastIdMsg: lastIdMsg));
+
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class MyApp extends StatelessWidget {

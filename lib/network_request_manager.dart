@@ -88,7 +88,7 @@ class RequestManager {
       // Display the notification
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
-          id: listMessages.last['id'],
+          id: 10,
           channelKey: 'basic_channel',
           title: listMessages.last['title'],
           body: listMessages.last['message'],
@@ -111,7 +111,6 @@ class RequestManager {
         requiredNetworkType: NetworkType.ANY,
       ),
       (String taskId) async {
-        listMessages = await getMessages();
         await printNotification();
         BackgroundFetch.finish(taskId);
       },
