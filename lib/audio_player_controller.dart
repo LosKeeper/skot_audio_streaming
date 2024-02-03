@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -95,7 +96,7 @@ class AudioPlayerController extends BaseAudioHandler {
     currentArtist =
         requestManager.jsonAvailableSongs[currentSong]['artist'].toString();
 
-    currentCover = NetworkImage(
+    currentCover = CachedNetworkImageProvider(
         '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}');
 
     PaletteGenerator paletteGenerator =

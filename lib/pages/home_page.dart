@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/audio_player_controller.dart';
@@ -61,7 +63,7 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
                 const Text(
-                  'Selection of the artist',
+                  'Selection of the moment',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal),
                 ),
                 const SizedBox(height: 20),
@@ -73,8 +75,10 @@ class HomePage extends StatelessWidget {
                         if (!snapshot.hasData &&
                             audioPlayerController.jsonLoaded == false) {
                           return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                              child: SpinKitFadingCube(
+                            color: Colors.purpleAccent,
+                            size: 80.0,
+                          ));
                         } else {
                           return GridView.count(
                             shrinkWrap: true,
@@ -93,7 +97,7 @@ class HomePage extends StatelessWidget {
                                       Container(
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
-                                            image: NetworkImage(
+                                            image: CachedNetworkImageProvider(
                                               '$url/${audioPlayerController.requestManager.jsonAvailableSongs[audioPlayerController.requestManager.listSelection[index]]['cover_path']}',
                                             ),
                                           ),

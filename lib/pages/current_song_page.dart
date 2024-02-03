@@ -6,14 +6,21 @@ import 'package:spartacus_project/audio_player_controller.dart';
 class CurrentSongPage extends StatefulWidget {
   final AudioPlayerController audioPlayerController;
   final double position;
+  final Function addToFavorites;
+  final Function removeFromFavorites;
+  final List<String> favorites;
 
   const CurrentSongPage({
     super.key,
     required this.audioPlayerController,
     required this.position,
+    required this.addToFavorites,
+    required this.removeFromFavorites,
+    required this.favorites,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _CurrentSongPageState createState() => _CurrentSongPageState();
 }
 
@@ -83,13 +90,15 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
+                    iconSize: 30,
                     icon: const Icon(Icons.skip_previous),
                     onPressed: () {
                       widget.audioPlayerController.skipToPrevious();
                     },
                   ),
-                  const SizedBox(width: 40),
+                  const SizedBox(width: 50),
                   IconButton(
+                    iconSize: 30,
                     icon: Icon(widget.audioPlayerController.player.playing
                         ? Icons.pause
                         : Icons.play_arrow),
@@ -97,8 +106,9 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                         ? () => widget.audioPlayerController.pause()
                         : () => widget.audioPlayerController.play(),
                   ),
-                  const SizedBox(width: 40),
+                  const SizedBox(width: 50),
                   IconButton(
+                    iconSize: 30,
                     icon: const Icon(Icons.skip_next),
                     onPressed: () {
                       widget.audioPlayerController.skipToNext();
@@ -106,6 +116,35 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    iconSize: 30,
+                    icon: const Icon(Icons.download_for_offline_outlined),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(width: 50),
+                  IconButton(
+                    iconSize: 30,
+                    icon: widget.favorites
+                            .contains(widget.audioPlayerController.currentSong)
+                        ? const Icon(Icons.favorite)
+                        : const Icon(Icons.favorite_border),
+                    onPressed: () {
+                      if (widget.favorites
+                          .contains(widget.audioPlayerController.currentSong)) {
+                        widget.removeFromFavorites(
+                            widget.audioPlayerController.currentSong);
+                      } else {
+                        widget.addToFavorites(
+                            widget.audioPlayerController.currentSong);
+                      }
+                    },
+                  ),
+                ],
+              )
             ],
           ),
         ),

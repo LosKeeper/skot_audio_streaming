@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/audio_player_controller.dart';
@@ -34,10 +35,15 @@ class AlbumPage extends StatelessWidget {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  '$url/${jsonAvailableAlbums[albumRequested]['cover_path']}',
-                  height: 300,
+                child: CachedNetworkImage(
+                  imageUrl:
+                      '$url/${jsonAvailableAlbums[albumRequested]['cover_path']}',
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error_outline),
                   width: 300,
+                  height: 300,
                 ),
               ),
               const SizedBox(height: 10),

@@ -50,7 +50,7 @@ void main() async {
         channelName: 'Basic notifications',
         channelDescription: 'Notification channel for basic tests',
         defaultColor: Colors.pink,
-        ledColor: Colors.white,
+        ledColor: Colors.purple,
         playSound: true,
         enableVibration: true,
       )
@@ -334,6 +334,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         return CurrentSongPage(
                           audioPlayerController: widget.audioPlayerController,
                           position: position,
+                          addToFavorites: addToFavorites,
+                          removeFromFavorites: removeFromFavorites,
+                          favorites: _favorites,
                         );
                       });
                 case 4:

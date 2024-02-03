@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 
@@ -55,7 +56,7 @@ class FavoritesPage extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return FutureBuilder<Color>(
                             future: PaletteGenerator.fromImageProvider(
-                              NetworkImage(
+                              CachedNetworkImageProvider(
                                   '$url/${jsonAvailableSongs[favorites[index]]['cover_path']}'),
                             ).then((value) =>
                                 value.dominantColor?.color ??
@@ -63,7 +64,15 @@ class FavoritesPage extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const CircularProgressIndicator(); // Affiche un indicateur de progression pendant le chargement
+                                return const SizedBox(
+                                  height: 70,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation(Colors.black),
+                                    ),
+                                  ),
+                                );
                               } else {
                                 return SizedBox(
                                   height: 70,
@@ -138,11 +147,12 @@ class FavoritesPage extends StatelessWidget {
                                       child: Row(
                                         children: [
                                           ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(7),
-                                            child: Image.network(
-                                                '$url/${jsonAvailableSongs[favorites[index]]['cover_path']}'),
-                                          ),
+                                              borderRadius:
+                                                  BorderRadius.circular(7),
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    '$url/${jsonAvailableSongs[favorites[index]]['cover_path']}',
+                                              )),
                                           Expanded(
                                             child: ListTile(
                                               title: Text(

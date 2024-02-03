@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:spartacus_project/constants.dart';
 
@@ -130,7 +131,7 @@ class SearchPage extends StatelessWidget {
                         Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(
+                              image: CachedNetworkImageProvider(
                                 '$url/${jsonAvailableAlbums[jsonAvailableAlbums.keys.toList()[index]]['cover_path']}',
                               ),
                             ),
