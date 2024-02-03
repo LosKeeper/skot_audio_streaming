@@ -52,9 +52,9 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   web:
     generate: true
-    image_path: "assets/images/skot.png"
-    background_color: "#ffffff"
-    theme_color: "#737dff"
+    image_path: "assets/images/skot_white.png"
+    background_color: "#000000"
+    theme_color: "#ffffff"
   windows:
     generate: true
     image_path: "assets/images/skot.png"
