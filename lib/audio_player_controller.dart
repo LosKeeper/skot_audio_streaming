@@ -132,10 +132,8 @@ class AudioPlayerController extends BaseAudioHandler {
       id: currentSong,
       title: currentSong,
       album: currentArtist,
-      artUri: currentCover is NetworkImage
-          ? Uri.parse(
-              '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}')
-          : null,
+      artUri: Uri.parse(
+          '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}'),
       duration: Duration(milliseconds: maxDuration.toInt()),
     );
 
