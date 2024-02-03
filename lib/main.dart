@@ -43,12 +43,12 @@ void main() async {
   List<String> favorites = await loadFavorites();
 
   AwesomeNotifications().initialize(
-    'resource://mipmap/ic_launcher',
+    'resource://mipmap/launcher_icon',
     [
       NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic notifications',
-        channelDescription: 'Notification channel for basic tests',
+        channelKey: 'default_channel',
+        channelName: 'Channel for notifications',
+        channelDescription: 'Notification channel for the Spartacus Project',
         defaultColor: Colors.pink,
         ledColor: Colors.purple,
         playSound: true,
@@ -78,6 +78,7 @@ void main() async {
       androidNotificationChannelId: 'com.mycompany.myapp.audio',
       androidNotificationChannelName: 'Spartacus Project Audio Service',
       androidNotificationOngoing: true,
+      androidNotificationIcon: "mipmap/player_icon",
     ),
   );
 
