@@ -4,7 +4,7 @@ import 'package:palette_generator/palette_generator.dart';
 
 import 'package:spartacus_project/constants.dart';
 
-class FavoritesPage extends StatelessWidget {
+class FavoritesPage extends StatefulWidget {
   final List<String> favorites;
   final Function removeFavorite;
   final Function changeCurrentSong;
@@ -20,6 +20,23 @@ class FavoritesPage extends StatelessWidget {
       required this.addToPlaylist,
       required this.play,
       required this.jsonAvailableSongs});
+
+  @override
+  _FavoritesPageState createState() => _FavoritesPageState();
+}
+
+class _FavoritesPageState extends State<FavoritesPage> {
+  final Map<String, Future<Color>> _colorCache = {};
+
+  Future<Color> _getColor(String imageUrl) {
+    return _colorCache.putIfAbsent(
+      imageUrl,
+      () => PaletteGenerator.fromImageProvider(
+        CachedNetworkImageProvider(imageUrl),
+      ).then((value) =>
+          value.dominantColor?.color ?? Colors.green.withOpacity(0.8)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +58,7 @@ class FavoritesPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.topCenter,
-                child: favorites.isEmpty
+                child: widget.favorites.isEmpty
                     ? const Text(
                         'No favorites yet !',
                         style: TextStyle(
@@ -52,15 +69,11 @@ class FavoritesPage extends StatelessWidget {
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: favorites.length,
+                        itemCount: widget.favorites.length,
                         itemBuilder: (context, index) {
                           return FutureBuilder<Color>(
-                            future: PaletteGenerator.fromImageProvider(
-                              CachedNetworkImageProvider(
-                                  '$url/${jsonAvailableSongs[favorites[index]]['cover_path']}'),
-                            ).then((value) =>
-                                value.dominantColor?.color ??
-                                Colors.green.withOpacity(0.8)),
+                            future: _getColor(
+                                '$url/${widget.jsonAvailableSongs[widget.favorites[index]]['cover_path']}'),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -79,8 +92,9 @@ class FavoritesPage extends StatelessWidget {
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(7),
                                     onTap: () async {
-                                      await changeCurrentSong(favorites[index]);
-                                      play();
+                                      await widget.changeCurrentSong(
+                                          widget.favorites[index]);
+                                      widget.play();
                                     },
                                     onLongPress: () {
                                       showDialog(
@@ -114,8 +128,9 @@ class FavoritesPage extends StatelessWidget {
                                                         title: const Text(
                                                             'Add to playlist'),
                                                         onTap: () {
-                                                          addToPlaylist(
-                                                              favorites[index]);
+                                                          widget.addToPlaylist(
+                                                              widget.favorites[
+                                                                  index]);
                                                           Navigator.of(context)
                                                               .pop();
                                                         },
@@ -126,8 +141,9 @@ class FavoritesPage extends StatelessWidget {
                                                         title: const Text(
                                                             'Remove from favorites'),
                                                         onTap: () {
-                                                          removeFavorite(
-                                                              favorites[index]);
+                                                          widget.removeFavorite(
+                                                              widget.favorites[
+                                                                  index]);
                                                           Navigator.of(context)
                                                               .pop();
                                                         },
@@ -151,12 +167,12 @@ class FavoritesPage extends StatelessWidget {
                                                   BorderRadius.circular(7),
                                               child: CachedNetworkImage(
                                                 imageUrl:
-                                                    '$url/${jsonAvailableSongs[favorites[index]]['cover_path']}',
+                                                    '$url/${widget.jsonAvailableSongs[widget.favorites[index]]['cover_path']}',
                                               )),
                                           Expanded(
                                             child: ListTile(
                                               title: Text(
-                                                favorites[index],
+                                                widget.favorites[index],
                                                 style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
