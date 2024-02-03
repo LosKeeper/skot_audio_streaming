@@ -18,6 +18,10 @@ class AudioPlayerController extends BaseAudioHandler {
   StreamController<bool> jsonLoadedController =
       StreamController<bool>.broadcast();
 
+  final StreamController<String> _currentSongController =
+      StreamController<String>.broadcast();
+  Stream<String> get currentSongStream => _currentSongController.stream;
+
   final player = AudioPlayer();
   RequestManager requestManager = RequestManager(
       availableSongsUrl: '$url/audio/available_songs.json',
@@ -149,6 +153,8 @@ class AudioPlayerController extends BaseAudioHandler {
     }
 
     super.mediaItem.add(_mediaItem);
+
+    _currentSongController.add(currentSong);
   }
 
   PlaybackState _transformEvent(PlaybackEvent event) {

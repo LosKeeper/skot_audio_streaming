@@ -362,25 +362,31 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.audioPlayerController.currentSong != '' &&
-                      _currentIndex != 3)
-                    StreamBuilder<double>(
-                      stream: widget.audioPlayerController.positionStream,
-                      builder: (context, snapshot) {
-                        double position = snapshot.data ?? 0.0;
-                        return CurrentSongCard(
-                          audioPlayerController: widget.audioPlayerController,
-                          changeCurrentIndex: changeCurrentIndex,
-                          position: position,
-                        );
-                      },
-                    ),
-                ],
+              child: StreamBuilder<String>(
+                stream: widget.audioPlayerController.currentSongStream,
+                builder: (context, snapshot) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.audioPlayerController.currentSong != '' &&
+                          _currentIndex != 3)
+                        StreamBuilder<double>(
+                          stream: widget.audioPlayerController.positionStream,
+                          builder: (context, snapshot) {
+                            double position = snapshot.data ?? 0.0;
+                            return CurrentSongCard(
+                              audioPlayerController:
+                                  widget.audioPlayerController,
+                              changeCurrentIndex: changeCurrentIndex,
+                              position: position,
+                            );
+                          },
+                        ),
+                    ],
+                  );
+                },
               ),
-            ),
+            )
           ],
         ),
       ),
