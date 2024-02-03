@@ -38,7 +38,7 @@ For the moment, we are not accepting contributions. Maybe in the future.
 
 ## TODO
 - [x] Add favorites
-- [ ] Add communication with other audio apps for Android
+- [ ] ~~Add communication with other audio apps for Android~~ (Allready done by default with just_audio)
 - [x] Add message from the server on main page
 - [x] Add new message on alertbox
 - [x] Add selection of the artist

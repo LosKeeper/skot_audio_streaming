@@ -89,6 +89,7 @@ class AudioPlayerController extends BaseAudioHandler {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
+    // Wait until current song is set
     if (currentSong == '') {
       return;
     }
