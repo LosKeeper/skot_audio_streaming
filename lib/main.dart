@@ -3,6 +3,7 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:background_fetch/background_fetch.dart';
+import 'dart:io';
 
 import 'package:spartacus_project/constants.dart';
 import 'package:spartacus_project/current_song_card.dart';
@@ -87,8 +88,9 @@ void main() async {
       favorites: favorites,
       audioPlayerController: audioPlayerController,
       lastIdMsg: lastIdMsg));
-
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  if (Platform.isAndroid || Platform.isIOS) {
+    BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  }
 }
 
 class MyApp extends StatelessWidget {

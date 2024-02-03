@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:background_fetch/background_fetch.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:io';
 
 import 'package:spartacus_project/constants.dart';
 
@@ -21,7 +22,9 @@ class RequestManager {
       required this.availableAlbumsUrl,
       required this.messagesUrl,
       required this.selectionUrl}) {
-    initBackgroundFetch();
+    if (Platform.isAndroid || Platform.isIOS) {
+      initBackgroundFetch();
+    }
   }
 
   Future<void> fillAvailableSongsAndAlbums() async {
