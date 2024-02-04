@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:background_fetch/background_fetch.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:spartacus_project/constants.dart';
 
