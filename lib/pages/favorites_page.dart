@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:universal_io/io.dart';
 
 import 'package:spartacus_project/constants.dart';
 
@@ -27,6 +28,25 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   final Map<String, Future<Color>> _colorCache = {};
+  bool _isEditing = false;
+
+  void _toggleEditingMode() {
+    setState(() {
+      _isEditing = !_isEditing;
+    });
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final String item = widget.favorites.removeAt(oldIndex);
+      widget.favorites.insert(newIndex, item);
+
+      saveFavorites(widget.favorites);
+    });
+  }
 
   Future<Color> _getColor(String imageUrl) {
     return _colorCache.putIfAbsent(
@@ -40,38 +60,71 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Text(
-              'Favorites',
-              style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: widget.favorites.isEmpty
-                    ? const Text(
-                        'No favorites yet !',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+    return Stack(
+      children: [
+        _isEditing
+            ? Column(
+                children: [
+                  Expanded(
+                    child: ReorderableListView(
+                      onReorder: _onReorder,
+                      children: widget.favorites.map((item) {
+                        return ListTile(
+                          key: Key(item),
+                          leading: const Icon(Icons.album),
+                          title: Text(item),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    widget.favorites.remove(item);
+                                  });
+                                },
+                              ),
+                              if (Platform.isAndroid)
+                                ReorderableDragStartListener(
+                                  index: widget.favorites.indexOf(item),
+                                  child: const Icon(Icons.menu),
+                                ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 80),
+                ],
+              )
+            : CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        const Text(
+                          'Favorites',
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: widget.favorites.length,
-                        itemBuilder: (context, index) {
-                          return FutureBuilder<Color>(
+                      ],
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 30,
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: FutureBuilder<Color>(
                             future: _getColor(
                                 '$url/${widget.jsonAvailableSongs[widget.favorites[index]]['cover_path']}'),
                             builder: (context, snapshot) {
@@ -192,14 +245,44 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 );
                               }
                             },
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
+                      childCount: widget.favorites.length,
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 80,
+                    ),
+                  ),
+                ],
               ),
+        Positioned(
+          right: 0,
+          bottom: 80,
+          child: GestureDetector(
+            onTap: _toggleEditingMode,
+            child: Container(
+              width: 56, // same as FloatingActionButton
+              height: 56, // same as FloatingActionButton
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                shape: BoxShape.circle,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(0, 2),
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+              child: Icon(_isEditing ? Icons.done : Icons.edit,
+                  color: Colors.white),
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
