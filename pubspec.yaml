@@ -1,5 +1,5 @@
-name: spartacus_project
-description: "Top Secret Spartacus Project"
+name: skot
+description: "Streaming Service for SKOT Label"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 0.0.1+1
@@ -42,8 +42,6 @@ flutter:
 
   assets:
     - assets/images/default_cover.png
-    - assets/images/skot.png
-    - assets/images/skot_white.png
 
 flutter_launcher_icons:
   android: "launcher_icon"

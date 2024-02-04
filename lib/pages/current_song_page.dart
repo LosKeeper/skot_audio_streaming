@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
-import 'package:spartacus_project/audio_player_controller.dart';
+import 'package:skot/audio_player_controller.dart';
 
 class CurrentSongPage extends StatefulWidget {
   final AudioPlayerController audioPlayerController;

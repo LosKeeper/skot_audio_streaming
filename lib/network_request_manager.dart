@@ -4,7 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:universal_io/io.dart';
 
-import 'package:spartacus_project/constants.dart';
+import 'package:skot/constants.dart';
 
 class RequestManager {
   final String availableSongsUrl;

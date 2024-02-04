@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:spartacus_project/constants.dart';
-import 'package:spartacus_project/audio_player_controller.dart';
+import 'package:skot/constants.dart';
+import 'package:skot/audio_player_controller.dart';
 
 class HomePage extends StatelessWidget {
   final AudioPlayerController audioPlayerController;

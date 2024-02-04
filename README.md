@@ -1,4 +1,4 @@
-# Spartacus Project
+# SKOT Streaming App
 <img src="https://img.shields.io/badge/Version-0.0.1-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License">
 <img src="https://img.shields.io/badge/Status-Active-green.svg" alt="Status">
@@ -14,7 +14,7 @@
 8. [TODO](#todo)
 
 ## Introduction
-This is a top secret project.  It is so secret that we can't even tell you what it is.  But it is awesome.
+This is an audio streaming app for the label SKOT.
 
 ## Dependencies
 - [Flutter](https://flutter.dev/docs/get-started/install)

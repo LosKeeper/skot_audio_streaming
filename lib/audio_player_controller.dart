@@ -7,8 +7,8 @@ import 'package:palette_generator/palette_generator.dart';
 import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 
-import 'package:spartacus_project/network_request_manager.dart';
-import 'package:spartacus_project/constants.dart';
+import 'package:skot/network_request_manager.dart';
+import 'package:skot/constants.dart';
 
 class AudioPlayerController extends BaseAudioHandler {
   final StreamController<double> _positionController =

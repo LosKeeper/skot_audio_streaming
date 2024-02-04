@@ -5,17 +5,17 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:universal_io/io.dart';
 
-import 'package:spartacus_project/constants.dart';
-import 'package:spartacus_project/current_song_card.dart';
-import 'package:spartacus_project/audio_player_controller.dart';
-import 'package:spartacus_project/network_request_manager.dart';
+import 'package:skot/constants.dart';
+import 'package:skot/current_song_card.dart';
+import 'package:skot/audio_player_controller.dart';
+import 'package:skot/network_request_manager.dart';
 
-import 'package:spartacus_project/pages/current_song_page.dart';
-import 'package:spartacus_project/pages/settings_page.dart';
-import 'package:spartacus_project/pages/search_page.dart';
-import 'package:spartacus_project/pages/home_page.dart';
-import 'package:spartacus_project/pages/album_page.dart';
-import 'package:spartacus_project/pages/favorites_page.dart';
+import 'package:skot/pages/current_song_page.dart';
+import 'package:skot/pages/settings_page.dart';
+import 'package:skot/pages/search_page.dart';
+import 'package:skot/pages/home_page.dart';
+import 'package:skot/pages/album_page.dart';
+import 'package:skot/pages/favorites_page.dart';
 
 @pragma('vm:entry-point')
 void backgroundFetchHeadlessTask(HeadlessTask task) async {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:universal_io/io.dart';
 
-import 'package:spartacus_project/constants.dart';
+import 'package:skot/constants.dart';
 
 class FavoritesPage extends StatefulWidget {
   final List<String> favorites;
