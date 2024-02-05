@@ -1,6 +1,6 @@
 {
-    "name": "audio_player",
-    "short_name": "audio_player",
+    "name": "SKOT",
+    "short_name": "SKOT",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#000000",

@@ -23,6 +23,7 @@ class FavoritesPage extends StatefulWidget {
       required this.jsonAvailableSongs});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FavoritesPageState createState() => _FavoritesPageState();
 }
 

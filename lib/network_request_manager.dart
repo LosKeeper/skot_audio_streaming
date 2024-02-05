@@ -79,7 +79,6 @@ class RequestManager {
   Future<void> printNotification() async {
     // Retrieve the ID of the last notification received
     int? lastNotificationId = await loadLastIdMsg();
-    print(lastNotificationId);
 
     // Update the notification from the server
     listMessages = await getMessages();

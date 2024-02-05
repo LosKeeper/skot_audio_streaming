@@ -47,7 +47,7 @@ void main() async {
       NotificationChannel(
         channelKey: 'default_channel',
         channelName: 'Channel for notifications',
-        channelDescription: 'Notification channel for the Spartacus Project',
+        channelDescription: 'Notification channel for SKOT',
         defaultColor: Colors.pink,
         ledColor: Colors.purple,
         playSound: true,
@@ -56,8 +56,8 @@ void main() async {
     ],
     channelGroups: [
       NotificationChannelGroup(
-        channelGroupKey: 'grp_spartacus',
-        channelGroupName: 'Spartacus',
+        channelGroupKey: 'grp_skot',
+        channelGroupName: 'Skot',
       )
     ],
     debug: true,
@@ -71,8 +71,8 @@ void main() async {
   var audioPlayerController = await AudioService.init(
     builder: () => AudioPlayerController(quality: quality),
     config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.mycompany.myapp.audio',
-      androidNotificationChannelName: 'Spartacus Project Audio Service',
+      androidNotificationChannelId: 'com.loskeeper.skot.aud',
+      androidNotificationChannelName: 'SKOT Audio Player',
       androidNotificationOngoing: true,
       androidNotificationIcon: "mipmap/player_icon",
     ),
@@ -103,7 +103,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Spartacus Project',
+      title: 'SKOT',
       theme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: MyHomePage(
-          title: 'LKP Streaming',
+          title: 'SKOT',
           quality: quality,
           audioPlayerController: audioPlayerController,
           favorites: favorites,
