@@ -14,10 +14,11 @@
 8. [TODO](#todo)
 
 ## Introduction
-This is an audio streaming app for the label SKOT.
+This is an high-fidelity audio streaming app for the label SKOT.
 
 ## Dependencies
 - [Flutter](https://flutter.dev/docs/get-started/install)
+- [SKOT Backend](https://github.com/LosKeeper/skot_backend)
 
 ## Installation
 1. Clone the repository
