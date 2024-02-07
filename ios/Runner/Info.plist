@@ -49,5 +49,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+		<string>The app don't use the microphone</string>
 </dict>
 </plist>
