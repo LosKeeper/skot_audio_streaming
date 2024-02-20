@@ -49,3 +49,7 @@ For the moment, we are not accepting contributions. Maybe in the future.
 - [ ] Download songs for offline use
 - [x] Add notification
 - [x] Reorganise favorites
+- [ ] Use playlist from the library
+
+## Suggestions
+- [ ] Swipe on the curent song card like Spotify app

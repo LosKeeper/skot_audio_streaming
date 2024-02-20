@@ -65,13 +65,61 @@ class AudioPlayerController extends BaseAudioHandler {
           nextSongs.removeAt(0);
           changedSong = true;
         } else {
-          var nextSong = requestManager.jsonAvailableSongs.keys.toList()[
-              Random().nextInt(requestManager.jsonAvailableSongs.length)];
+          var nextSong = getNextSong(currentSong);
           changeCurrentSong(nextSong);
           changedSong = true;
         }
       }
     });
+  }
+
+  String getNextSong(String currentSong) {
+    var currentSongDetails = requestManager.jsonAvailableSongs[currentSong];
+    if (currentSongDetails == null) {
+      return requestManager.jsonAvailableSongs.keys
+          .toList()[Random().nextInt(requestManager.jsonAvailableSongs.length)];
+    }
+
+    var lastAlbum = currentSongDetails['album'];
+    var albumDetails = requestManager.jsonAvailableAlbums[lastAlbum];
+    if (albumDetails == null) {
+      return requestManager.jsonAvailableSongs.keys
+          .toList()[Random().nextInt(requestManager.jsonAvailableSongs.length)];
+    }
+
+    var songList = albumDetails['songs'];
+    var track =
+        songList.indexWhere((curSong) => curSong.keys.first == currentSong) + 1;
+
+    if (track >= 0 && track < songList.length) {
+      return songList[track].keys.first;
+    } else {
+      // Return the first song of the next album
+      var albumList = requestManager.jsonAvailableAlbums.keys.toList();
+      var albumIndex = albumList.indexOf(lastAlbum);
+      if (albumIndex >= 0 && albumIndex < albumList.length - 1) {
+        var nextAlbum = albumList[albumIndex + 1];
+        var nextAlbumDetails = requestManager.jsonAvailableAlbums[nextAlbum];
+        if (nextAlbumDetails != null) {
+          var nextSongList = nextAlbumDetails['songs'];
+          if (nextSongList.isNotEmpty) {
+            return nextSongList[0].keys.first;
+          }
+        }
+      } else {
+        // Return the first song of the first album
+        var firstAlbum = albumList[0];
+        var firstAlbumDetails = requestManager.jsonAvailableAlbums[firstAlbum];
+        if (firstAlbumDetails != null) {
+          var firstSongList = firstAlbumDetails['songs'];
+          if (firstSongList.isNotEmpty) {
+            return firstSongList[0].keys.first;
+          }
+        }
+      }
+    }
+    return requestManager.jsonAvailableSongs.keys
+        .toList()[Random().nextInt(requestManager.jsonAvailableSongs.length)];
   }
 
   Future<void> init() async {
@@ -240,8 +288,7 @@ class AudioPlayerController extends BaseAudioHandler {
       await changeCurrentSong(nextSongs[0]);
       nextSongs.removeAt(0);
     } else {
-      await changeCurrentSong(requestManager.jsonAvailableSongs.keys.toList()[
-          Random().nextInt(requestManager.jsonAvailableSongs.length)]);
+      await changeCurrentSong(getNextSong(currentSong));
     }
     await Future.delayed(const Duration(milliseconds: 10));
     await play();
