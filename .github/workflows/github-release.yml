@@ -1,0 +1,77 @@
+name: github release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    name: Test, Build and Release on GitHub
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '18'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.9'
+
+      - name: Cache Flutter dependencies
+        uses: subosito/flutter-action@v2
+
+      - name: Get packages
+        run: flutter pub get
+
+      # - name: Run analyzer
+      #   run: flutter analyze
+
+      # - name: Run tests
+      #   run: flutter test
+
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: key.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+
+      - name: Build apk
+        run: flutter build apk --release
+
+      - name: Get the latest release tag from the pubsec.yaml
+        id: get_tag
+        run: |
+          echo ::set-output name=tag::$(grep -oP 'version: \K.*' pubspec.yaml | sed 's/+//g')
+
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/app/outputs/apk/release/app-release.apk
+          tag_name: "v${{ steps.get_tag.outputs.tag }}"
+          name: "New Release v${{ steps.get_tag.outputs.tag }}"
+          body: |
+            # What's New
+            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/CHANGELOG.md) for the latest updates !
+
+            # How to use it
+            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/README.md) to configure and execute it !
+          draft: false
+          prerelease: false
