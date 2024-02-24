@@ -73,17 +73,18 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - name: Debug Info
-        run: |
-          ls -al ./vendor/bundle
-          bundle show
-          bundle --version
-          fastlane --version
 
+      - name: Download Google Service Account Key
+        id: google_service_account_key
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: google-service-account.json
+          encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+      
       - name: Release to Google Play (internal)
         env:
           SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
-          SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          SUPPLY_JSON_KEY_DATA: ${{ steps.google_service_account_key.outputs.filePath }}
         run: |
           fastlane supply \
           --aab build/app/outputs/bundle/release/app-release.aab \
