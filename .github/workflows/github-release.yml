@@ -75,6 +75,5 @@ jobs:
             Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/README.md) to configure and execute it !
           draft: false
           prerelease: false
-          permissions:
-            contents: write
-            discussions: write
+          env:
+            GITHUB_TOKEN: ${{ secrets.PERSONAL_GH_TOEKN }}
