@@ -94,7 +94,8 @@ jobs:
 
       - name: Get the latest release tag from the pubsec.yaml
         id: get_tag
-        run: echo ::set-output name=tag::$(grep -oP 'version: \K.*' pubspec.yaml | sed 's/+//g')
+        run: |
+          echo ::set-output name=tag::$(grep -oP 'version: \K.*' pubspec.yaml | sed 's/+//g')
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
