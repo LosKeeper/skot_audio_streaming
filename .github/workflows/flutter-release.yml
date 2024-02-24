@@ -26,13 +26,10 @@ jobs:
         with:
           flutter-version: '3.16.9'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Cache Flutter dependencies
+        uses: subosito/flutter-action@v2
         with:
-          path: .pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
+          sub-command: cache
 
       - name: Get packages
         run: flutter pub get
@@ -64,7 +61,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v2
         with:
           ruby-version: '2.7'
 
