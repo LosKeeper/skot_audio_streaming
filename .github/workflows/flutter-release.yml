@@ -92,13 +92,17 @@ jobs:
           --package_name $SUPPLY_PACKAGE_NAME \
           --track internal
 
+      - name: Get the latest release tag from the pubsec.yaml
+        id: get_tag
+        run: echo ::set-output name=tag::$(grep -oP 'version: \K.*' pubspec.yaml | sed 's/+//g')
+
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
         with:
           files: |
             build/app/outputs/apk/release/app-release.apk
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref_name }}
+          tag_name: "v${{ steps.get_tag.outputs.tag }}"
+          name: "New Release v${{ steps.get_tag.outputs.tag }}"
           body: |
             # What's New
             Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/CHANGELOG.md) for the latest updates !
