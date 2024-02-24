@@ -3,7 +3,7 @@ name: google-play-connection
 on:
   push:
     branches:
-      - release
+      - playlist
 
 jobs:
   build:
@@ -14,7 +14,8 @@ jobs:
     env:
       BUNDLE_GEMFILE: Gemfile
 
-    - name: Create Gemfile
+    steps:
+      - name: Create Gemfile
         run: |
           echo "source 'https://rubygems.org'" > ${{ env.BUNDLE_GEMFILE }}
           echo "" >> ${{ env.BUNDLE_GEMFILE }}
@@ -25,7 +26,6 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-
 
       - name: Download Google Service Account Key
         id: google_service_account_key
