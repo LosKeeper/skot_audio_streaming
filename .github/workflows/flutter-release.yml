@@ -11,9 +11,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env: 
-      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,6 +63,9 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
+
+      - name: Create Gemfile
+        run: echo "source 'https://rubygems.org'\n\ngem 'your-gem'" > Gemfile
 
       - name: Download bundle dependencies
         run: |
