@@ -1,111 +1,111 @@
-# name: flutter android release
+name: flutter android release
 
-# on:
-#   push:
-#     branches:
-#       - release
+on:
+  push:
+    branches:
+      - release
 
-# jobs:
-#   build:
-#     name: Test, Build and Release on Google Play
+jobs:
+  build:
+    name: Test, Build and Release on Google Play
 
-#     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-#     env:
-#       BUNDLE_GEMFILE: Gemfile
+    env:
+      BUNDLE_GEMFILE: Gemfile
 
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Setup Java
-#         uses: actions/setup-java@v4
-#         with:
-#           distribution: 'temurin'
-#           java-version: '18'
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '18'
 
-#       - name: Set up Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: '3.16.9'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.9'
 
-#       - name: Cache Flutter dependencies
-#         uses: subosito/flutter-action@v2
+      - name: Cache Flutter dependencies
+        uses: subosito/flutter-action@v2
 
-#       - name: Get packages
-#         run: flutter pub get
+      - name: Get packages
+        run: flutter pub get
 
-#       # - name: Run analyzer
-#       #   run: flutter analyze
+      # - name: Run analyzer
+      #   run: flutter analyze
 
-#       # - name: Run tests
-#       #   run: flutter test
+      # - name: Run tests
+      #   run: flutter test
 
-#       - name: Download Android keystore
-#         id: android_keystore
-#         uses: timheuer/base64-to-file@v1.2
-#         with:
-#           fileName: key.jks
-#           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: key.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
-#       - name: Create key.properties
-#         run: |
-#           echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
-#           echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
-#           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
-#           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
 
-#       - name: Build app bundle
-#         run: flutter build appbundle --release
+      - name: Build app bundle
+        run: flutter build appbundle --release
 
-#       - name: Build apk
-#         run: flutter build apk --release
+      - name: Build apk
+        run: flutter build apk --release
 
-#       - name: Create Gemfile
-#         run: |
-#           echo "source 'https://rubygems.org'" > ${{ env.BUNDLE_GEMFILE }}
-#           echo "" >> ${{ env.BUNDLE_GEMFILE }}
-#           echo "gem 'rails'" >> ${{ env.BUNDLE_GEMFILE }}
+      - name: Create Gemfile
+        run: |
+          echo "source 'https://rubygems.org'" > ${{ env.BUNDLE_GEMFILE }}
+          echo "" >> ${{ env.BUNDLE_GEMFILE }}
+          echo "gem 'rails'" >> ${{ env.BUNDLE_GEMFILE }}
 
-#       - name: Setup Ruby
-#         uses: ruby/setup-ruby@v1
-#         with:
-#           ruby-version: '3.3'
-#           bundler-cache: true
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
 
 
-#       - name: Download Google Service Account Key
-#         id: google_service_account_key
-#         uses: timheuer/base64-to-file@v1.2
-#         with:
-#           fileName: google-service-account.json
-#           encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+      - name: Download Google Service Account Key
+        id: google_service_account_key
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: google-service-account.json
+          encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
       
-#       - name: Release to Google Play (internal)
-#         env:
-#           SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
-#           SUPPLY_JSON_KEY: ${{ steps.google_service_account_key.outputs.filePath }}
-#         run: |
-#           fastlane supply \
-#           --aab build/app/outputs/bundle/release/app-release.aab \
-#           --json_key $SUPPLY_JSON_KEY \
-#           --package_name $SUPPLY_PACKAGE_NAME \
-#           --track internal
+      - name: Release to Google Play (internal)
+        env:
+          SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
+          SUPPLY_JSON_KEY: ${{ steps.google_service_account_key.outputs.filePath }}
+        run: |
+          fastlane supply \
+          --aab build/app/outputs/bundle/release/app-release.aab \
+          --json_key $SUPPLY_JSON_KEY \
+          --package_name $SUPPLY_PACKAGE_NAME \
+          --track internal
 
-#       - name: Release to GitHub
-#         uses: softprops/action-gh-release@v1
-#         with:
-#           files: |
-#             build/app/outputs/apk/release/app-release.apk
-#           tag_name: ${{ github.ref }}
-#           release_name: ${{ github.ref_name }}
-#           body: |
-#             # What's New
-#             Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/CHANGELOG.md) for the latest updates !
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/app/outputs/apk/release/app-release.apk
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref_name }}
+          body: |
+            # What's New
+            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/CHANGELOG.md) for the latest updates !
 
-#             # How to use it
-#             Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/README.md) to configure and execute it !
-#           draft: false
-#           prerelease: false
+            # How to use it
+            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/README.md) to configure and execute it !
+          draft: false
+          prerelease: false
 
       
