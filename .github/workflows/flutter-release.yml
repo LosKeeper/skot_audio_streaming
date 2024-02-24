@@ -28,8 +28,6 @@ jobs:
 
       - name: Cache Flutter dependencies
         uses: subosito/flutter-action@v2
-        with:
-          sub-command: cache
 
       - name: Get packages
         run: flutter pub get
@@ -64,13 +62,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7'
-
-      - name: Cache bundle dependencies
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: ${{ runner.os }}-gems-
+          bundler-cache: true
 
       - name: Download bundle dependencies
         run: |
