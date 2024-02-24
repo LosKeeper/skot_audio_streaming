@@ -1,3 +1,10 @@
+name: Try to connect to Google Play
+
+on:
+  push:
+    branches:
+      - release
+
 jobs:
   build:
     name: Test the Google Play connection
