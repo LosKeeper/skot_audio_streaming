@@ -84,10 +84,12 @@ jobs:
       - name: Release to Google Play (internal)
         env:
           SUPPLY_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
-          SUPPLY_JSON_KEY_DATA: ${{ steps.google_service_account_key.outputs.filePath }}
+          SUPPLY_JSON_KEY: ${{ steps.google_service_account_key.outputs.filePath }}
         run: |
           fastlane supply \
           --aab build/app/outputs/bundle/release/app-release.aab \
+          --json_key $SUPPLY_JSON_KEY \
+          --package_name $SUPPLY_PACKAGE_NAME \
           --track internal
 
       - name: Release to GitHub
