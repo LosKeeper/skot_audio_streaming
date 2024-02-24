@@ -1,4 +1,4 @@
-name: Try to connect to Google Play
+name: google-play-connection
 
 on:
   push:
