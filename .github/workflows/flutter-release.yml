@@ -73,11 +73,10 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-
-      - name: Download bundle dependencies
+      - name: Debug Info
         run: |
-          gem install bundler
-          bundle install
+          ls -al ./vendor/bundle
+          bundle show
 
       - name: Release to Google Play (internal)
         env:
