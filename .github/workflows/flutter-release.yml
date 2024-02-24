@@ -76,7 +76,7 @@ jobs:
 
       - name: Download bundle dependencies
         run: |
-          gem install bundler:2.0.2
+          gem install bundler
           bundle install
 
       - name: Release to Google Play (internal)
