@@ -77,6 +77,8 @@ jobs:
         run: |
           ls -al ./vendor/bundle
           bundle show
+          bundel --version
+          bundle exec fastlane --version
 
       - name: Release to Google Play (internal)
         env:
