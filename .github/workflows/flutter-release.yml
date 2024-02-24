@@ -61,17 +61,17 @@ jobs:
       - name: Build apk
         run: flutter build apk --release
 
+      - name: Create Gemfile
+        run: |
+          echo "source 'https://rubygems.org'" > ${{ env.BUNDLE_GEMFILE }}
+          echo "" >> ${{ env.BUNDLE_GEMFILE }}
+          echo "gem 'rails'" >> ${{ env.BUNDLE_GEMFILE }}
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
           bundler-cache: true
-
-      - name: Create Gemfile
-        run: |
-          echo "source 'https://rubygems.org'" > Gemfile
-          echo "" >> Gemfile
-          echo "gem 'rails'" >> Gemfile
 
 
       - name: Download bundle dependencies

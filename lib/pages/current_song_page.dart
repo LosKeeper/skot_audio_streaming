@@ -123,8 +123,8 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                   IconButton(
                     iconSize: 30,
                     icon: widget.audioPlayerController.getRandom()
-                        ? const Icon(Icons.shuffle_on)
-                        : const Icon(Icons.shuffle),
+                        ? const Icon(Icons.shuffle_on_outlined)
+                        : const Icon(Icons.shuffle_rounded),
                     onPressed: () {
                       widget.audioPlayerController.changeRandom();
                     },
