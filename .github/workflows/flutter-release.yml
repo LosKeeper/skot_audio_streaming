@@ -65,7 +65,11 @@ jobs:
           bundler-cache: true
 
       - name: Create Gemfile
-        run: echo "source 'https://rubygems.org'\n\ngem 'your-gem'" > Gemfile
+        run: |
+          echo "source 'https://rubygems.org'" > Gemfile
+          echo "" >> Gemfile
+          echo "gem 'rails'" >> Gemfile
+
 
       - name: Download bundle dependencies
         run: |
