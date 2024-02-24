@@ -122,8 +122,12 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                 children: [
                   IconButton(
                     iconSize: 30,
-                    icon: const Icon(Icons.download_for_offline_outlined),
-                    onPressed: () {},
+                    icon: widget.audioPlayerController.getRandom()
+                        ? const Icon(Icons.shuffle_on)
+                        : const Icon(Icons.shuffle),
+                    onPressed: () {
+                      widget.audioPlayerController.changeRandom();
+                    },
                   ),
                   const SizedBox(width: 50),
                   IconButton(

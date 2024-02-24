@@ -51,6 +51,8 @@ class AudioPlayerController extends BaseAudioHandler {
 
   int quality = 0;
 
+  bool random = false;
+
   AudioPlayerController({required this.quality}) {
     player.positionStream.listen((duration) {
       currentPosition = duration.inMilliseconds.toDouble();
@@ -74,6 +76,11 @@ class AudioPlayerController extends BaseAudioHandler {
   }
 
   String getNextSong(String currentSong) {
+    if (random) {
+      return requestManager.jsonAvailableSongs.keys
+          .toList()[Random().nextInt(requestManager.jsonAvailableSongs.length)];
+    }
+
     var currentSongDetails = requestManager.jsonAvailableSongs[currentSong];
     if (currentSongDetails == null) {
       return requestManager.jsonAvailableSongs.keys
@@ -120,6 +127,14 @@ class AudioPlayerController extends BaseAudioHandler {
     }
     return requestManager.jsonAvailableSongs.keys
         .toList()[Random().nextInt(requestManager.jsonAvailableSongs.length)];
+  }
+
+  void changeRandom() {
+    random = !random;
+  }
+
+  bool getRandom() {
+    return random;
   }
 
   Future<void> init() async {
