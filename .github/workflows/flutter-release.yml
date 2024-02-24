@@ -61,7 +61,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v2
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7'
 
