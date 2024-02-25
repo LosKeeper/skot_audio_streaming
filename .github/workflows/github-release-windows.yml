@@ -1,4 +1,4 @@
-name: github release android
+name: github release windows
 
 permissions:
   contents: write
@@ -21,8 +21,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          version: '3.16.9'
-          
+          flutter-version: '3.16.9'
 
       - name: Get packages
         run: flutter pub get
@@ -38,7 +37,7 @@ jobs:
 
       - name: Zip all the files
         run: |
-          7z a -tzip skot_windows.zip build\windows\runner\Release\*
+          7z a -tzip skot_windows_x64.zip build\windows\x64\Release\*
 
       - name: Get the latest release tag from the pubsec.yaml
         id: get_tag
@@ -51,7 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            skot_windows.zip
+            skot_windows_x64.zip
           tag_name: "v${{ steps.get_tag.outputs.tag }}"
           name: "New Release v${{ steps.get_tag.outputs.tag }}"
           body: |
