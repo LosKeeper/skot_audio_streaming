@@ -9,8 +9,42 @@ on:
       - release
 
 jobs:
-  build:
-    name: Test, Build and Release on GitHub
+  build_windows:
+    runs-on: windows-latest
+
+    steps:
+     - uses: actions/checkout@v4
+     - uses: subosito/flutter-action@v2
+       with:
+         channel: 'stable'
+     - run: flutter build windows
+
+     - name: Get the latest release tag from the pubsec.yaml
+       id: get_tag
+       run: |
+         echo ::set-output name=tag::$(grep -oP 'version: \K[0-9]+\.[0-9]+\.[0-9]+' pubspec.yaml)
+
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            build/app/outputs/apk/release/app-release.apk
+          tag_name: "v${{ steps.get_tag.outputs.tag }}"
+          name: "New Release v${{ steps.get_tag.outputs.tag }}"
+          body: |
+            # What's New
+            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/CHANGELOG.md) for the latest updates !
+
+            # How to use it
+            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/README.md) to configure and execute it !
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  build_android:
+    name: Test, Build and Release on GitHub for Android
 
     runs-on: ubuntu-latest
 
@@ -74,10 +108,10 @@ jobs:
           name: "New Release v${{ steps.get_tag.outputs.tag }}"
           body: |
             # What's New
-            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/CHANGELOG.md) for the latest updates !
+            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/CHANGELOG.md) for the latest updates !
 
             # How to use it
-            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/README.md) to configure and execute it !
+            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/README.md) to configure and execute it !
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
