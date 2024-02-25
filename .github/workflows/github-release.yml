@@ -74,10 +74,10 @@ jobs:
           name: "New Release v${{ steps.get_tag.outputs.tag }}"
           body: |
             # What's New
-            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/CHANGELOG.md) for the latest updates !
+            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/CHANGELOG.md) for the latest updates !
 
             # How to use it
-            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/main/README.md) to configure and execute it !
+            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/README.md) to configure and execute it !
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
