@@ -39,11 +39,19 @@ jobs:
         run: |
           7z a -tzip skot_windows_x64.zip build\windows\x64\runner\Release\*
 
-      - name: Get the latest release tag from the pubsec.yaml
+      - name: Get the latest release tag from pubspec.yaml
         id: get_tag
         run: |
-          $tag = (Get-Content pubspec.yaml -Raw) -match 'version: (\d+\.\d+\.\d+)' | Out-Null ; $matches[1]
-          echo "##[set-output name=tag]$tag"
+          $content = Get-Content pubspec.yaml -Raw
+          $tagRegex = 'version: (\d+\.\d+\.\d+)'
+          
+          if ($content -match $tagRegex) {
+              $tag = $matches[1]
+              echo "::set-output name=tag::$tag"
+          } else {
+              echo "Version not found in pubspec.yaml"
+              exit 1
+          }
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
