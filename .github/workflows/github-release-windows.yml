@@ -26,11 +26,11 @@ jobs:
       - name: Get packages
         run: flutter pub get
 
-      # - name: Run analyzer
-      #   run: flutter analyze
+      - name: Run analyzer
+        run: flutter analyze
 
-      # - name: Run tests
-      #   run: flutter test
+      - name: Run tests
+        run: flutter test
 
       - name: Build Windows app
         run: flutter build windows

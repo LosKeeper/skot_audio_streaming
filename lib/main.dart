@@ -237,68 +237,66 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_currentIndex == 5) {
-          await changeCurrentIndex(0);
-        } else if (_currentIndex != 1) {
-          await changeCurrentIndex(1);
-        } else {
-          return true;
-        }
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          forceMaterialTransparency: true,
-          actions: [
-            IconButton(
-              onPressed: () => changeCurrentIndex(3),
-              icon: const Icon(Icons.music_note),
-            ),
-            IconButton(
-                onPressed: () => changeCurrentIndex(4),
-                icon: const Icon(Icons.settings))
-          ],
-        ),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Bottom bar
-            SalomonBottomBar(
-              currentIndex: _currentIndex,
-              onTap: (i) => setState(() => _currentIndex = i),
-              items: [
-                /// Search
-                SalomonBottomBarItem(
-                  icon: const Icon(Icons.search),
-                  title: const Text("Search"),
-                  selectedColor: Colors.pinkAccent,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        forceMaterialTransparency: true,
+        actions: [
+          IconButton(
+            onPressed: () => changeCurrentIndex(3),
+            icon: const Icon(Icons.music_note),
+          ),
+          IconButton(
+              onPressed: () => changeCurrentIndex(4),
+              icon: const Icon(Icons.settings))
+        ],
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Bottom bar
+          SalomonBottomBar(
+            currentIndex: _currentIndex,
+            onTap: (i) => setState(() => _currentIndex = i),
+            items: [
+              /// Search
+              SalomonBottomBarItem(
+                icon: const Icon(Icons.search),
+                title: const Text("Search"),
+                selectedColor: Colors.pinkAccent,
+              ),
 
-                /// Home
-                SalomonBottomBarItem(
-                  icon: const Icon(Icons.home),
-                  title: const Text("Home"),
-                  selectedColor: Colors.purpleAccent,
-                ),
+              /// Home
+              SalomonBottomBarItem(
+                icon: const Icon(Icons.home),
+                title: const Text("Home"),
+                selectedColor: Colors.purpleAccent,
+              ),
 
-                /// Favorites
-                SalomonBottomBarItem(
-                  icon: const Icon(Icons.favorite),
-                  title: const Text("Favorites"),
-                  selectedColor: Colors.redAccent,
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            () {
-              switch (_currentIndex) {
-                case 0:
-                  return SearchPage(
+              /// Favorites
+              SalomonBottomBarItem(
+                icon: const Icon(Icons.favorite),
+                title: const Text("Favorites"),
+                selectedColor: Colors.redAccent,
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          () {
+            switch (_currentIndex) {
+              case 0:
+                return PopScope(
+                  canPop: false,
+                  onPopInvoked: (bool didPop) {
+                    if (didPop) {
+                      changeCurrentIndex(1);
+                    } else {
+                      changeCurrentIndex(1);
+                    }
+                  },
+                  child: SearchPage(
                     jsonAvailableSongs: widget.audioPlayerController
                         .requestManager.jsonAvailableSongs,
                     jsonAvailableAlbums: widget.audioPlayerController
@@ -308,13 +306,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     changeCurrentIndex: changeCurrentIndex,
                     changeAlbumRequested: changeAlbumRequested,
                     playSong: widget.audioPlayerController.play,
-                  );
-                case 1:
-                  return HomePage(
-                      audioPlayerController: widget.audioPlayerController);
+                  ),
+                );
+              case 1:
+                return HomePage(
+                    audioPlayerController: widget.audioPlayerController);
 
-                case 2:
-                  return FavoritesPage(
+              case 2:
+                return PopScope(
+                  canPop: false,
+                  onPopInvoked: (bool didPop) {
+                    changeCurrentIndex(1);
+                  },
+                  child: FavoritesPage(
                     favorites: _favorites,
                     changeCurrentSong:
                         widget.audioPlayerController.changeCurrentSong,
@@ -323,27 +327,45 @@ class _MyHomePageState extends State<MyHomePage> {
                     addToPlaylist: widget.audioPlayerController.addNextSong,
                     jsonAvailableSongs: widget.audioPlayerController
                         .requestManager.jsonAvailableSongs,
-                  );
-                case 3:
-                  return StreamBuilder<double>(
-                      stream: widget.audioPlayerController.positionStream,
-                      builder: (context, snapshot) {
-                        double position = snapshot.data ?? 0.0;
-                        return CurrentSongPage(
+                  ),
+                );
+              case 3:
+                return StreamBuilder<double>(
+                    stream: widget.audioPlayerController.positionStream,
+                    builder: (context, snapshot) {
+                      double position = snapshot.data ?? 0.0;
+                      return PopScope(
+                        canPop: false,
+                        onPopInvoked: (bool didPop) {
+                          changeCurrentIndex(1);
+                        },
+                        child: CurrentSongPage(
                           audioPlayerController: widget.audioPlayerController,
                           position: position,
                           addToFavorites: addToFavorites,
                           removeFromFavorites: removeFromFavorites,
                           favorites: _favorites,
-                        );
-                      });
-                case 4:
-                  return SettingsPage(
+                        ),
+                      );
+                    });
+              case 4:
+                return PopScope(
+                  canPop: false,
+                  onPopInvoked: (bool didPop) {
+                    changeCurrentIndex(1);
+                  },
+                  child: SettingsPage(
                     quality: widget.audioPlayerController.quality,
                     changeQuality: widget.audioPlayerController.changeQuality,
-                  );
-                case 5:
-                  return AlbumPage(
+                  ),
+                );
+              case 5:
+                return PopScope(
+                  canPop: false,
+                  onPopInvoked: (bool didPop) {
+                    changeCurrentIndex(0);
+                  },
+                  child: AlbumPage(
                     jsonAvailableSongs: widget.audioPlayerController
                         .requestManager.jsonAvailableSongs,
                     jsonAvailableAlbums: widget.audioPlayerController
@@ -353,42 +375,41 @@ class _MyHomePageState extends State<MyHomePage> {
                     audioPlayerController: widget.audioPlayerController,
                     addToPlaylist: widget.audioPlayerController.addNextSong,
                     addToFavorites: addToFavorites,
-                  );
-                default:
-                  return Container();
-              }
-            }(),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: StreamBuilder<String>(
-                stream: widget.audioPlayerController.currentSongStream,
-                builder: (context, snapshot) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.audioPlayerController.currentSong != '' &&
-                          _currentIndex != 3)
-                        StreamBuilder<double>(
-                          stream: widget.audioPlayerController.positionStream,
-                          builder: (context, snapshot) {
-                            double position = snapshot.data ?? 0.0;
-                            return CurrentSongCard(
-                              audioPlayerController:
-                                  widget.audioPlayerController,
-                              changeCurrentIndex: changeCurrentIndex,
-                              position: position,
-                            );
-                          },
-                        ),
-                    ],
-                  );
-                },
-              ),
-            )
-          ],
-        ),
+                  ),
+                );
+              default:
+                return Container();
+            }
+          }(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: StreamBuilder<String>(
+              stream: widget.audioPlayerController.currentSongStream,
+              builder: (context, snapshot) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.audioPlayerController.currentSong != '' &&
+                        _currentIndex != 3)
+                      StreamBuilder<double>(
+                        stream: widget.audioPlayerController.positionStream,
+                        builder: (context, snapshot) {
+                          double position = snapshot.data ?? 0.0;
+                          return CurrentSongCard(
+                            audioPlayerController: widget.audioPlayerController,
+                            changeCurrentIndex: changeCurrentIndex,
+                            position: position,
+                          );
+                        },
+                      ),
+                  ],
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }
