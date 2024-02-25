@@ -37,7 +37,7 @@ jobs:
 
       - name: Zip all the files
         run: |
-          7z a -tzip skot_windows_x64.zip build\windows\x64\Release\*
+          7z a -tzip skot_windows_x64.zip build\windows\x64\runner\Release\*
 
       - name: Get the latest release tag from the pubsec.yaml
         id: get_tag
