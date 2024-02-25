@@ -1,0 +1,74 @@
+name: github release windows
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    name: Test, Build and Release on GitHub for Windows
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.9'
+
+      - name: Get packages
+        run: flutter pub get
+
+      # - name: Run analyzer
+      #   run: flutter analyze
+
+      # - name: Run tests
+      #   run: flutter test
+
+      - name: Build Windows app
+        run: flutter build windows
+
+      - name: Zip all the files
+        run: |
+          7z a -tzip skot_windows_x64.zip build\windows\x64\runner\Release\*
+
+      - name: Get the latest release tag from pubspec.yaml
+        id: get_tag
+        run: |
+          $content = Get-Content pubspec.yaml -Raw
+          $tagRegex = 'version: (\d+\.\d+\.\d+)'
+          
+          if ($content -match $tagRegex) {
+              $tag = $matches[1]
+              echo "::set-output name=tag::$tag"
+          } else {
+              echo "Version not found in pubspec.yaml"
+              exit 1
+          }
+
+
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            skot_windows_x64.zip
+          tag_name: "v${{ steps.get_tag.outputs.tag }}"
+          name: "New Release v${{ steps.get_tag.outputs.tag }}"
+          body: |
+            # What's New
+            Refers to the [CHANGELOG.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/CHANGELOG.md) for the latest updates !
+
+            # How to use it
+            Download the source files and refer to the [README.md](https://github.com/LosKeeper/skot_audio_streaming/blob/release/README.md) to configure and execute it !
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}

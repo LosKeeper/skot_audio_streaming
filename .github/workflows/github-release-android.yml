@@ -1,4 +1,4 @@
-name: github release
+name: github release android
 
 permissions:
   contents: write
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Test, Build and Release on GitHub
+    name: Test, Build and Release on GitHub for Android
 
     runs-on: ubuntu-latest
 
