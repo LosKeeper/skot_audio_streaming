@@ -16,6 +16,7 @@ import 'package:skot/pages/search_page.dart';
 import 'package:skot/pages/home_page.dart';
 import 'package:skot/pages/album_page.dart';
 import 'package:skot/pages/favorites_page.dart';
+import 'package:skot/pages/profile.dart';
 
 @pragma('vm:entry-point')
 void backgroundFetchHeadlessTask(HeadlessTask task) async {
@@ -145,11 +146,17 @@ class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
   String _albumRequested = '';
   List<String> _favorites = [];
+  String username = '';
 
-  Future<void> changeCurrentIndex(int newIndex) async {
+  Future<void> changeCurrentIndex(int newIndex, {String? username}) async {
     setState(() {
       _currentIndex = newIndex;
     });
+    if (username != null) {
+      setState(() {
+        this.username = username;
+      });
+    }
   }
 
   Future<void> changeAlbumRequested(String albumRequested) async {
@@ -357,6 +364,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: SettingsPage(
                     quality: widget.audioPlayerController.quality,
                     changeQuality: widget.audioPlayerController.changeQuality,
+                    changeCurrentIndex: changeCurrentIndex,
                   ),
                 );
               case 5:
@@ -375,6 +383,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     audioPlayerController: widget.audioPlayerController,
                     addToPlaylist: widget.audioPlayerController.addNextSong,
                     addToFavorites: addToFavorites,
+                  ),
+                );
+              case 6:
+                return PopScope(
+                  canPop: false,
+                  onPopInvoked: (bool didPop) {
+                    changeCurrentIndex(1);
+                  },
+                  child: ProfilePage(
+                    username: username,
+                    changeCurrentIndex: changeCurrentIndex,
+                    changeAlbumRequested: changeAlbumRequested,
+                    getAlbumsForUser: widget
+                        .audioPlayerController.requestManager.getAlbumsForUser,
                   ),
                 );
               default:

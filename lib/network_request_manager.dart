@@ -48,6 +48,16 @@ class RequestManager {
     return json;
   }
 
+  Map<String, dynamic> getAlbumsForUser(String username) {
+    Map<String, dynamic> response = {};
+    for (var album in jsonAvailableAlbums.entries) {
+      if (album.value['artist'] == username) {
+        response[album.key] = album.value;
+      }
+    }
+    return response;
+  }
+
   Map<String, dynamic> sortJsonByDate(Map<String, dynamic> jsonData) {
     List<MapEntry<String, dynamic>> itemList = jsonData.entries.toList();
 

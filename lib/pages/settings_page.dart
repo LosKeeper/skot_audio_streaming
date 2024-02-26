@@ -5,9 +5,13 @@ import 'package:package_info/package_info.dart';
 class SettingsPage extends StatefulWidget {
   final int quality;
   final Function changeQuality;
+  final Function changeCurrentIndex;
 
   const SettingsPage(
-      {super.key, required this.quality, required this.changeQuality});
+      {super.key,
+      required this.quality,
+      required this.changeQuality,
+      required this.changeCurrentIndex});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -122,7 +126,6 @@ class _SettingsPageState extends State<SettingsPage> {
             value: const Text('LKP, Anybalsmith, Lesaul'),
             leading: const Icon(Icons.group),
             onPressed: (context) {
-              // Create an alert dialog with all the explications about what is SKOT and all the members
               showDialog(
                 context: context,
                 builder: (context) {
@@ -131,8 +134,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                            'SKOT is a group of friends who are passionate about music and technology. Created in 2024 by LKP, Anybalsmith and Lesaul, the label is continously growing. The main goal of SKOT is to provide the best music experience to the world.',
+                        const Text('''
+SKOT is a group of friends who are passionate about music and technology. Created in 2024 by LKP, Anybalsmith and Lesaul, the label is continously growing. The main goal of SKOT is to provide the best music experience to the world.''',
                             textAlign: TextAlign.justify),
                         const SizedBox(height: 10),
                         const Align(
@@ -143,21 +146,25 @@ class _SettingsPageState extends State<SettingsPage> {
                           leading: const Icon(Icons.person),
                           title: const Text('LKP'),
                           onTap: () {
-                            // Open the profile page of LKP
+                            widget.changeCurrentIndex(6, username: 'LKP');
+                            Navigator.pop(context);
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.person),
                           title: const Text('Anybalsmith'),
                           onTap: () {
-                            // Open the profile page of Anybalsmith
+                            widget.changeCurrentIndex(6,
+                                username: 'Anybalsmith');
+                            Navigator.pop(context);
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.person),
                           title: const Text('Lesaul'),
                           onTap: () {
-                            // Open the profile page of Lesaul
+                            widget.changeCurrentIndex(6, username: 'Lesaul');
+                            Navigator.pop(context);
                           },
                         ),
                       ],

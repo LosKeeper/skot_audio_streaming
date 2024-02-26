@@ -45,8 +45,9 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 ## TODO
 - [ ] Selection -> Current Playing
 - [ ] Download songs for offline use
-- [ ] Create a real settings page
-- [ ] Create profil page
+- [x] Create a real settings page
+- [x] Create profil page
+- [ ] Correct back gesture by using a stack
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app
