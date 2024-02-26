@@ -46,6 +46,7 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 - [ ] Selection -> Current Playing
 - [ ] Download songs for offline use
 - [ ] Create a real settings page
+- [ ] Create profil page
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app
