@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Profile page for SKOT memebers accessible from the settings page into the credits section or by clicking on the author name on an album page.
+
 ### Changed
 - New settings page with more options.
 
