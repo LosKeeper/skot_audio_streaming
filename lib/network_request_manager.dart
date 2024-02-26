@@ -84,11 +84,8 @@ class RequestManager {
     listMessages = await getMessages();
 
     if (lastNotificationId < listMessages.last['id']) {
-      // Save the ID of the last notification received
-      await saveLastIdMsg(listMessages.last['id']);
-
       // Display the notification
-      await AwesomeNotifications().createNotification(
+      bool printed = await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 10,
           channelKey: 'basic_channel',
@@ -96,6 +93,11 @@ class RequestManager {
           body: listMessages.last['message'],
         ),
       );
+
+      if (printed) {
+        // Save the ID of the last notification received
+        await saveLastIdMsg(listMessages.last['id']);
+      }
     }
   }
 
