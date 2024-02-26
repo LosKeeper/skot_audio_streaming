@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-02-26
+
+### Added
+- Profile page for SKOT memebers accessible from the settings page into the credits section or by clicking on the author name on an album page.
+
+### Changed
+- New settings page with more options.
+- Real back gesture by using a stack.
+
 ## [0.2.1] - 2024-02-24
 
 ### Added
@@ -16,8 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1] - 2024-02-05
 
 ### Added
-- Initial release
+- Initial releass
 
-[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.3.0
 [0.2.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.2.1
 [0.0.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.0.1

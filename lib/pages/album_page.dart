@@ -55,12 +55,19 @@ class AlbumPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.left,
               ),
-              Text(
-                jsonAvailableAlbums[albumRequested]['artist'],
-                style: const TextStyle(
-                  fontSize: 20.0,
+              GestureDetector(
+                onTap: () {
+                  changeCurrentIndex(6,
+                      username: jsonAvailableAlbums[albumRequested]['artist']
+                          .toString());
+                },
+                child: Text(
+                  jsonAvailableAlbums[albumRequested]['artist'],
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                textAlign: TextAlign.left,
               ),
               const SizedBox(height: 30),
               ListView.builder(

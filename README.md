@@ -1,5 +1,5 @@
 # SKOT Streaming App
-<img src="https://img.shields.io/badge/Version-0.2.1-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/Version-0.3.0-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License">
 <img src="https://img.shields.io/badge/Status-Active-green.svg" alt="Status">
 
@@ -16,7 +16,7 @@
 10. [Suggestions](#suggestions)
 
 ## Introduction
-This is an high-fidelity audio streaming app for the label SKOT.
+This is an high-fidelity audio streaming app for the SKOT label.
 
 ## Dependencies
 - [Flutter](https://flutter.dev/docs/get-started/install)
@@ -43,8 +43,7 @@ For the moment, we are not accepting contributions. Maybe in the future.
 For the changelog, see the [changelog](CHANGELOG.md) file.
 
 ## TODO
-- [ ] Selection -> Current Playing
-- [ ] Download songs for offline use
+- [ ] Offline mode
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app

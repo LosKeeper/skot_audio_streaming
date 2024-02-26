@@ -16,6 +16,7 @@ import 'package:skot/pages/search_page.dart';
 import 'package:skot/pages/home_page.dart';
 import 'package:skot/pages/album_page.dart';
 import 'package:skot/pages/favorites_page.dart';
+import 'package:skot/pages/profile.dart';
 
 @pragma('vm:entry-point')
 void backgroundFetchHeadlessTask(HeadlessTask task) async {
@@ -145,11 +146,22 @@ class _MyHomePageState extends State<MyHomePage> {
   var _currentIndex = 1;
   String _albumRequested = '';
   List<String> _favorites = [];
+  String username = '';
+  final List<int> _previousPages = [-1];
 
-  Future<void> changeCurrentIndex(int newIndex) async {
+  Future<void> changeCurrentIndex(int newIndex, {String? username}) async {
     setState(() {
+      if (_previousPages.last != -1 && newIndex == _previousPages.last) {
+        _previousPages.removeLast();
+      }
+      _previousPages.add(_currentIndex);
       _currentIndex = newIndex;
     });
+    if (username != null) {
+      setState(() {
+        this.username = username;
+      });
+    }
   }
 
   Future<void> changeAlbumRequested(String albumRequested) async {
@@ -256,7 +268,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // Bottom bar
           SalomonBottomBar(
             currentIndex: _currentIndex,
-            onTap: (i) => setState(() => _currentIndex = i),
+            onTap: (i) => setState(() {
+              if (_currentIndex != 0) {
+                _previousPages.add(_currentIndex);
+              }
+              _currentIndex = i;
+            }),
             items: [
               /// Search
               SalomonBottomBarItem(
@@ -290,11 +307,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 return PopScope(
                   canPop: false,
                   onPopInvoked: (bool didPop) {
-                    if (didPop) {
-                      changeCurrentIndex(1);
-                    } else {
-                      changeCurrentIndex(1);
-                    }
+                    changeCurrentIndex(_previousPages.last);
+                    _previousPages.removeLast();
                   },
                   child: SearchPage(
                     jsonAvailableSongs: widget.audioPlayerController
@@ -316,7 +330,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 return PopScope(
                   canPop: false,
                   onPopInvoked: (bool didPop) {
-                    changeCurrentIndex(1);
+                    changeCurrentIndex(_previousPages.last);
+                    _previousPages.removeLast();
                   },
                   child: FavoritesPage(
                     favorites: _favorites,
@@ -337,7 +352,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       return PopScope(
                         canPop: false,
                         onPopInvoked: (bool didPop) {
-                          changeCurrentIndex(1);
+                          changeCurrentIndex(_previousPages.last);
+                          _previousPages.removeLast();
                         },
                         child: CurrentSongPage(
                           audioPlayerController: widget.audioPlayerController,
@@ -352,18 +368,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 return PopScope(
                   canPop: false,
                   onPopInvoked: (bool didPop) {
-                    changeCurrentIndex(1);
+                    changeCurrentIndex(_previousPages.last);
+                    _previousPages.removeLast();
                   },
                   child: SettingsPage(
                     quality: widget.audioPlayerController.quality,
                     changeQuality: widget.audioPlayerController.changeQuality,
+                    changeCurrentIndex: changeCurrentIndex,
                   ),
                 );
               case 5:
                 return PopScope(
                   canPop: false,
                   onPopInvoked: (bool didPop) {
-                    changeCurrentIndex(0);
+                    changeCurrentIndex(_previousPages.last);
+                    _previousPages.removeLast();
                   },
                   child: AlbumPage(
                     jsonAvailableSongs: widget.audioPlayerController
@@ -375,6 +394,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     audioPlayerController: widget.audioPlayerController,
                     addToPlaylist: widget.audioPlayerController.addNextSong,
                     addToFavorites: addToFavorites,
+                  ),
+                );
+              case 6:
+                return PopScope(
+                  canPop: false,
+                  onPopInvoked: (bool didPop) {
+                    changeCurrentIndex(_previousPages.last);
+                    _previousPages.removeLast();
+                  },
+                  child: ProfilePage(
+                    username: username,
+                    changeCurrentIndex: changeCurrentIndex,
+                    changeAlbumRequested: changeAlbumRequested,
+                    getAlbumsForUser: widget
+                        .audioPlayerController.requestManager.getAlbumsForUser,
                   ),
                 );
               default:

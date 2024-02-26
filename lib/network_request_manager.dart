@@ -48,6 +48,16 @@ class RequestManager {
     return json;
   }
 
+  Map<String, dynamic> getAlbumsForUser(String username) {
+    Map<String, dynamic> response = {};
+    for (var album in jsonAvailableAlbums.entries) {
+      if (album.value['artist'] == username) {
+        response[album.key] = album.value;
+      }
+    }
+    return response;
+  }
+
   Map<String, dynamic> sortJsonByDate(Map<String, dynamic> jsonData) {
     List<MapEntry<String, dynamic>> itemList = jsonData.entries.toList();
 
@@ -84,11 +94,8 @@ class RequestManager {
     listMessages = await getMessages();
 
     if (lastNotificationId < listMessages.last['id']) {
-      // Save the ID of the last notification received
-      await saveLastIdMsg(listMessages.last['id']);
-
       // Display the notification
-      await AwesomeNotifications().createNotification(
+      bool printed = await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 10,
           channelKey: 'basic_channel',
@@ -96,6 +103,11 @@ class RequestManager {
           body: listMessages.last['message'],
         ),
       );
+
+      if (printed) {
+        // Save the ID of the last notification received
+        await saveLastIdMsg(listMessages.last['id']);
+      }
     }
   }
 
