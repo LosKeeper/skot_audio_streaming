@@ -1,9 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 String url = 'https://loskeeper.fr:42024';
 
 String availableSongsUrl = '$url/audio/available_songs.json';
 String availableAlbumsUrl = '$url/audio/available_albums.json';
+
+Color buttonColor = const Color.fromARGB(255, 95, 0, 119);
 
 qualityToExtension(int quality) {
   switch (quality) {

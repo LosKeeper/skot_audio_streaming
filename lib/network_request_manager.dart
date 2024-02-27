@@ -98,7 +98,7 @@ class RequestManager {
       bool printed = await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 10,
-          channelKey: 'basic_channel',
+          channelKey: 'skot_channel',
           title: listMessages.last['title'],
           body: listMessages.last['message'],
         ),
@@ -118,7 +118,7 @@ class RequestManager {
         stopOnTerminate: false,
         startOnBoot: true,
         enableHeadless: true,
-        requiresBatteryNotLow: false,
+        requiresBatteryNotLow: true,
         requiresCharging: false,
         requiresStorageNotLow: false,
         requiresDeviceIdle: false,
