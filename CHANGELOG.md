@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2024-02-27
+
 ### Added
 - Added a button to play all the songs from the favorite into a playlist
 - Add album info on album page
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial releass
 
-[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.3.1
 [0.3.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.3.0
 [0.2.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.2.1
 [0.0.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.0.1
