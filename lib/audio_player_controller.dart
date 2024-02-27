@@ -261,6 +261,10 @@ class AudioPlayerController extends BaseAudioHandler {
     nextSongs.add(newSong);
   }
 
+  Future<void> addAllToPlaylist(List<String> songs) async {
+    nextSongs.addAll(songs);
+  }
+
   Future<void> changeQuality(int newQuality) async {
     player.stop();
     quality = newQuality;

@@ -9,8 +9,10 @@ class FavoritesPage extends StatefulWidget {
   final List<String> favorites;
   final Function removeFavorite;
   final Function changeCurrentSong;
-  final Function addToPlaylist;
+  final Function setNextSong;
+  final Function addAllToPlaylist;
   final Function play;
+  final Function skipToNext;
   final Map<String, dynamic> jsonAvailableSongs;
 
   const FavoritesPage(
@@ -18,8 +20,10 @@ class FavoritesPage extends StatefulWidget {
       required this.favorites,
       required this.removeFavorite,
       required this.changeCurrentSong,
-      required this.addToPlaylist,
+      required this.setNextSong,
+      required this.addAllToPlaylist,
       required this.play,
+      required this.skipToNext,
       required this.jsonAvailableSongs});
 
   @override
@@ -182,7 +186,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                         title: const Text(
                                                             'Add to playlist'),
                                                         onTap: () {
-                                                          widget.addToPlaylist(
+                                                          widget.setNextSong(
                                                               widget.favorites[
                                                                   index]);
                                                           Navigator.of(context)
@@ -260,15 +264,15 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 ],
               ),
         Positioned(
-          right: 0,
-          bottom: 80,
+          right: 5,
+          bottom: 85,
           child: GestureDetector(
             onTap: _toggleEditingMode,
             child: Container(
-              width: 56, // same as FloatingActionButton
-              height: 56, // same as FloatingActionButton
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: buttonColor,
                 shape: BoxShape.circle,
                 boxShadow: const [
                   BoxShadow(
@@ -283,6 +287,33 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ),
           ),
         ),
+        if (!_isEditing)
+          Positioned(
+            right: 5,
+            bottom: 150,
+            child: GestureDetector(
+              onTap: () async {
+                widget.addAllToPlaylist(widget.favorites);
+                await widget.skipToNext();
+              },
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: buttonColor,
+                  shape: BoxShape.circle,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 2),
+                      blurRadius: 6.0,
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.fast_forward, color: Colors.white),
+              ),
+            ),
+          ),
       ],
     );
   }

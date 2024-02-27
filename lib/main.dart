@@ -339,7 +339,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         widget.audioPlayerController.changeCurrentSong,
                     play: widget.audioPlayerController.play,
                     removeFavorite: removeFromFavorites,
-                    addToPlaylist: widget.audioPlayerController.addNextSong,
+                    setNextSong: widget.audioPlayerController.addNextSong,
+                    addAllToPlaylist:
+                        widget.audioPlayerController.addAllToPlaylist,
+                    skipToNext: widget.audioPlayerController.skipToNext,
                     jsonAvailableSongs: widget.audioPlayerController
                         .requestManager.jsonAvailableSongs,
                   ),

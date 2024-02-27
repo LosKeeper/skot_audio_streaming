@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added a button to play all the songs from the favorite into a playlist
+
 ### Fixed
 - Fix notifications system
 - Fix current song card position on the artist page

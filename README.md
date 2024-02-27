@@ -44,10 +44,9 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 
 ## TODO
 - [ ] Offline mode
-- [ ] Add a button to play all the songs from the favorite into a playlist
-- [ ] Fix song_card into artist page
+- [x] Add a button to play all the songs from the favorite into a playlist
+- [x] Fix song_card into artist page
 - [x] Fix notifications
-- [ ] Fix delay for first song
 - [ ] Add album info on album page
 - [ ] Live streaming?
 
