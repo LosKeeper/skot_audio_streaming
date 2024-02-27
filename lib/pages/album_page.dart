@@ -59,6 +59,7 @@ class AlbumPage extends StatelessWidget {
                 onTap: () {
                   changeCurrentIndex(6,
                       username: jsonAvailableAlbums[albumRequested]['artist']
+                          .split(' ')[0]
                           .toString());
                 },
                 child: Text(

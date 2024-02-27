@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix notifications system
+- Fix current song card position on the artist page
 
 ## [0.3.0] - 2024-02-26
 
