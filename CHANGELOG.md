@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added a button to play all the songs from the favorite into a playlist
+- Add album info on album page
 
 ### Fixed
 - Fix notifications system

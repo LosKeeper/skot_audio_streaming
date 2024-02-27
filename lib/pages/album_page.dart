@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 
 import 'package:skot/constants.dart';
 import 'package:skot/audio_player_controller.dart';
@@ -153,6 +154,24 @@ class AlbumPage extends StatelessWidget {
                     ),
                   );
                 },
+              ),
+              const SizedBox(height: 15),
+              Text(
+                'Total: ${jsonAvailableAlbums[albumRequested]["songs"].length} songs',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'Released on: ${DateFormat.yMMMMd('en_US').format(DateTime.parse(jsonAvailableAlbums[albumRequested]["date"]))}',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.grey,
+                ),
               ),
               const SizedBox(height: 100),
             ],
