@@ -46,8 +46,10 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 - [ ] Offline mode
 - [ ] Add a button to play all the songs from the favorite into a playlist
 - [ ] Fix song_card into artist page
-- [ ] Fix notifications
+- [x] Fix notifications
 - [ ] Fix delay for first song
+- [ ] Add album info on album page
+- [ ] Live streaming?
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app

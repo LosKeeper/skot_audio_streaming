@@ -43,10 +43,10 @@ void main() async {
   List<String> favorites = await loadFavorites();
 
   AwesomeNotifications().initialize(
-    'resource://mipmap/launcher_icon',
+    'resource://mipmap/player_icon',
     [
       NotificationChannel(
-        channelKey: 'default_channel',
+        channelKey: 'skot_channel',
         channelName: 'Channel for notifications',
         channelDescription: 'Notification channel for SKOT',
         defaultColor: Colors.pink,
@@ -61,7 +61,7 @@ void main() async {
         channelGroupName: 'Skot',
       )
     ],
-    debug: true,
+    debug: false,
   );
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
@@ -72,7 +72,7 @@ void main() async {
   var audioPlayerController = await AudioService.init(
     builder: () => AudioPlayerController(quality: quality),
     config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.loskeeper.skot.aud',
+      androidNotificationChannelId: 'com.loskeeper.skot.audio',
       androidNotificationChannelName: 'SKOT Audio Player',
       androidNotificationOngoing: true,
       androidNotificationIcon: "mipmap/player_icon",

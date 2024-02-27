@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fix notifications system
+
 ## [0.3.0] - 2024-02-26
 
 ### Added
