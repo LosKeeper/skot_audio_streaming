@@ -21,8 +21,6 @@ class RequestManager {
   List<dynamic> listMessages = [];
   List<String> listSelection = [];
 
-  bool _notifLivePrinted = false;
-
   RequestManager(
       {required this.availableSongsUrl,
       required this.availableAlbumsUrl,
@@ -97,24 +95,38 @@ class RequestManager {
     // check if the mount point is available
     var response = request.body.contains('Mount Point /stream');
 
+    bool? notifLivePrinted = await loadPrintedLiveNotif();
+
     if (response) {
-      if (!_notifLivePrinted) {
+      if (!notifLivePrinted) {
         showSimpleNotification(
           const Text(
             'Live is on, click on the blinking button to join it !',
           ),
           background: Colors.green,
         );
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 11,
+            channelKey: 'skot_channel',
+            title: 'Live is on',
+            body: 'Click here to join it !',
+          ),
+        );
       }
-      _notifLivePrinted = true;
+      await savePrintedLiveNotif(true);
       return true;
     } else {
-      _notifLivePrinted = false;
+      await savePrintedLiveNotif(false);
       return false;
     }
   }
 
   Future<void> printNotification() async {
+    /**
+     * Notification in case of messages
+     */
+
     // Retrieve the ID of the last notification received
     int? lastNotificationId = await loadLastIdMsg();
 
@@ -137,6 +149,11 @@ class RequestManager {
         await saveLastIdMsg(listMessages.last['id']);
       }
     }
+
+    /**
+     * Notification in case of live
+     */
+    await isOnLive();
   }
 
   void initBackgroundFetch() {

@@ -215,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage>
         });
       }
     });
+
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,

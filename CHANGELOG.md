@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added live streaming mode (blinking button on the bottom right of the screen to switch between live and on demand mode)
 - Added a notification in the application when a live is available
+- Notification when a live streaming is in progress
 
 ## [0.3.1] - 2024-02-27
 

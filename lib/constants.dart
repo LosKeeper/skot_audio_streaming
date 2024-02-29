@@ -48,3 +48,25 @@ Future<void> saveLastIdMsg(int lastIdMsg) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setInt('lastIdMsg', lastIdMsg);
 }
+
+Future<bool> loadPrintedLiveNotif() async {
+  final prefs = await SharedPreferences.getInstance();
+  final printedLiveNotif = prefs.getBool('printedLiveNotif');
+  return printedLiveNotif ?? false;
+}
+
+Future<void> savePrintedLiveNotif(bool printedLiveNotif) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('printedLiveNotif', printedLiveNotif);
+}
+
+Future<bool> loadWantNotif() async {
+  final prefs = await SharedPreferences.getInstance();
+  final wantNotif = prefs.getBool('wantNotif');
+  return wantNotif ?? true;
+}
+
+Future<void> saveWantNotif(bool wantNotif) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('wantNotif', wantNotif);
+}

@@ -44,6 +44,7 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 
 ## TODO
 - [ ] Offline mode
+- [ ] Add notifications settings
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app

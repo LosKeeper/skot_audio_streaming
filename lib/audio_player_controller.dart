@@ -228,7 +228,7 @@ class AudioPlayerController extends BaseAudioHandler {
     } else if (await requestManager.isOnLive()) {
       currentArtist = 'SKOT';
       currentSong = 'SKOT Live';
-      currentCover = const AssetImage('assets/images/live_cover.png');
+      currentCover = const AssetImage('assets/images/skot.png');
 
       PaletteGenerator paletteGenerator =
           await PaletteGenerator.fromImageProvider(currentCover);
@@ -248,6 +248,7 @@ class AudioPlayerController extends BaseAudioHandler {
         id: 'live',
         title: currentSong,
         album: currentArtist,
+        artUri: Uri.parse('$url/audio/skot.png'),
       );
 
       super.mediaItem.add(_mediaItem);
