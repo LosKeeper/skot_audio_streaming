@@ -6,9 +6,11 @@ import 'package:just_audio/just_audio.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'dart:math';
 import 'package:audio_service/audio_service.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import 'package:skot/network_request_manager.dart';
 import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 
 class AudioPlayerController extends BaseAudioHandler {
   final StreamController<double> _positionController =
@@ -52,6 +54,9 @@ class AudioPlayerController extends BaseAudioHandler {
   int quality = 0;
 
   bool random = false;
+
+  bool liveSelected = false;
+  bool livePlaying = false;
 
   AudioPlayerController({required this.quality}) {
     player.positionStream.listen((duration) {
@@ -156,68 +161,114 @@ class AudioPlayerController extends BaseAudioHandler {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    // Wait until current song is set
-    if (currentSong == '') {
-      return;
-    }
+    if (!liveSelected) {
+      // Wait until current song is set
+      if (currentSong == '') {
+        return;
+      }
+      livePlaying = false;
+      currentArtist =
+          requestManager.jsonAvailableSongs[currentSong]['artist'].toString();
 
-    currentArtist =
-        requestManager.jsonAvailableSongs[currentSong]['artist'].toString();
+      currentCover = CachedNetworkImageProvider(
+          '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}');
 
-    currentCover = CachedNetworkImageProvider(
-        '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}');
+      PaletteGenerator paletteGenerator =
+          await PaletteGenerator.fromImageProvider(currentCover);
 
-    PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(currentCover);
+      dominantColor = paletteGenerator.dominantColor?.color;
 
-    dominantColor = paletteGenerator.dominantColor?.color;
+      if (dominantColor != null) {
+        textColor = dominantColor!.computeLuminance() > 0.5
+            ? Colors.black
+            : Colors.white;
+      }
 
-    if (dominantColor != null) {
-      textColor =
-          dominantColor!.computeLuminance() > 0.5 ? Colors.black : Colors.white;
-    }
+      await player.setUrl(
+          '$url/${requestManager.jsonAvailableSongs[currentSong]['file_path']}' +
+              qualityToExtension(quality));
+      player.positionStream.listen((duration) {
+        currentPosition = duration.inMilliseconds.toDouble();
+        maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
+      });
 
-    await player.setUrl(
-        '$url/${requestManager.jsonAvailableSongs[currentSong]['file_path']}' +
-            qualityToExtension(quality));
-    player.positionStream.listen((duration) {
-      currentPosition = duration.inMilliseconds.toDouble();
+      player.bufferedPositionStream.listen((duration) {
+        bufferedPosition = min(duration.inMilliseconds.toDouble(), maxDuration);
+      });
       maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
-    });
 
-    player.bufferedPositionStream.listen((duration) {
-      bufferedPosition = min(duration.inMilliseconds.toDouble(), maxDuration);
-    });
-    maxDuration = player.duration?.inMilliseconds.toDouble() ?? 0.0;
+      player.positionStream.listen((duration) {
+        currentPosition = duration.inMilliseconds.toDouble();
+        _positionController.add(currentPosition);
+      });
 
-    player.positionStream.listen((duration) {
-      currentPosition = duration.inMilliseconds.toDouble();
-      _positionController.add(currentPosition);
-    });
+      _mediaItem = MediaItem(
+        id: currentSong,
+        title: currentSong,
+        album: currentArtist,
+        artUri: Uri.parse(
+            '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}'),
+        duration: Duration(milliseconds: maxDuration.toInt()),
+      );
 
-    _mediaItem = MediaItem(
-      id: currentSong,
-      title: currentSong,
-      album: currentArtist,
-      artUri: Uri.parse(
-          '$url/${requestManager.jsonAvailableSongs[currentSong]['cover_path']}'),
-      duration: Duration(milliseconds: maxDuration.toInt()),
-    );
+      if (previousSongs.isEmpty) {
+        previousSongs.add(currentSong);
+      } else if (previousSongs.last != currentSong) {
+        previousSongs.add(currentSong);
+      }
 
-    if (previousSongs.isEmpty) {
-      previousSongs.add(currentSong);
-    } else if (previousSongs.last != currentSong) {
-      previousSongs.add(currentSong);
+      if (changedSong) {
+        changedSong = false;
+        play();
+      }
+
+      super.mediaItem.add(_mediaItem);
+
+      _currentSongController.add(currentSong);
+    } else if (await requestManager.isOnLive()) {
+      currentArtist = 'SKOT';
+      currentSong = 'SKOT Live';
+      currentCover = const AssetImage('assets/images/live_cover.png');
+
+      PaletteGenerator paletteGenerator =
+          await PaletteGenerator.fromImageProvider(currentCover);
+      dominantColor = paletteGenerator.dominantColor?.color;
+
+      await player.setUrl(liveUrl);
+
+      // Unkown duration for live
+      maxDuration = 0.0;
+
+      player.positionStream.listen((duration) {
+        currentPosition = duration.inMilliseconds.toDouble();
+        _positionController.add(currentPosition);
+      });
+
+      _mediaItem = MediaItem(
+        id: 'live',
+        title: currentSong,
+        album: currentArtist,
+      );
+
+      super.mediaItem.add(_mediaItem);
+
+      _currentSongController.add('live');
+
+      livePlaying = true;
+
+      await play();
+    } else {
+      liveSelected = false;
+      livePlaying = false;
+
+      showSimpleNotification(
+        const Text(
+          'Not on live yet, please try again later or select an another song.',
+          style: TextStyle(color: Colors.white),
+        ),
+        background: Colors.red,
+      );
     }
-
-    if (changedSong) {
-      changedSong = false;
-      play();
-    }
-
-    super.mediaItem.add(_mediaItem);
-
-    _currentSongController.add(currentSong);
   }
 
   PlaybackState _transformEvent(PlaybackEvent event) {
@@ -249,7 +300,18 @@ class AudioPlayerController extends BaseAudioHandler {
     );
   }
 
+  bool getLivePlaying() {
+    return livePlaying;
+  }
+
+  Future<void> setLiveSelected() async {
+    await player.stop();
+    liveSelected = true;
+    await initAudio();
+  }
+
   Future<void> changeCurrentSong(String newSong) async {
+    liveSelected = false;
     currentSong = newSong;
     player.stop();
     initAudio();
@@ -303,6 +365,9 @@ class AudioPlayerController extends BaseAudioHandler {
 
   @override
   Future<void> skipToNext() async {
+    if (livePlaying) {
+      return;
+    }
     if (nextSongs.isNotEmpty) {
       await changeCurrentSong(nextSongs[0]);
       nextSongs.removeAt(0);
@@ -316,6 +381,9 @@ class AudioPlayerController extends BaseAudioHandler {
 
   @override
   Future<void> skipToPrevious() async {
+    if (livePlaying) {
+      return;
+    }
     if (previousSongs.length > 1) {
       nextSongs.insert(0, previousSongs.last);
       previousSongs.removeLast();

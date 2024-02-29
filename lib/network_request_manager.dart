@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:background_fetch/background_fetch.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:universal_io/io.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 
 class RequestManager {
   final String availableSongsUrl;
@@ -16,6 +20,8 @@ class RequestManager {
   Map<String, dynamic> jsonAvailableAlbums = {};
   List<dynamic> listMessages = [];
   List<String> listSelection = [];
+
+  bool _notifLivePrinted = false;
 
   RequestManager(
       {required this.availableSongsUrl,
@@ -84,6 +90,28 @@ class RequestManager {
     List<String> titles =
         json.map<String>((item) => item['title'].toString()).toList();
     return titles;
+  }
+
+  Future<bool> isOnLive() async {
+    var request = await http.get(Uri.parse(liveUrlInfo));
+    // check if the mount point is available
+    var response = request.body.contains('Mount Point /stream');
+
+    if (response) {
+      if (!_notifLivePrinted) {
+        showSimpleNotification(
+          const Text(
+            'Live is on, click on the blinking button to join it !',
+          ),
+          background: Colors.green,
+        );
+      }
+      _notifLivePrinted = true;
+      return true;
+    } else {
+      _notifLivePrinted = false;
+      return false;
+    }
   }
 
   Future<void> printNotification() async {

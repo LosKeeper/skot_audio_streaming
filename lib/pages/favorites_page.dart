@@ -4,6 +4,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 
 class FavoritesPage extends StatefulWidget {
   final List<String> favorites;

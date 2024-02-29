@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 
 class SearchPage extends StatelessWidget {
   final Map<String, dynamic> jsonAvailableSongs;
