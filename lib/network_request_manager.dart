@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:background_fetch/background_fetch.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:universal_io/io.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 
 class RequestManager {
   final String availableSongsUrl;
@@ -86,7 +90,43 @@ class RequestManager {
     return titles;
   }
 
+  Future<bool> isOnLive() async {
+    var request = await http.get(Uri.parse(liveUrlInfo));
+    // check if the mount point is available
+    var response = request.body.contains(mountPointName);
+
+    bool? notifLivePrinted = await loadPrintedLiveNotif();
+
+    if (response) {
+      if (!notifLivePrinted) {
+        showSimpleNotification(
+          const Text(
+            'Live is on, click on the blinking button to join it !',
+          ),
+          background: Colors.green,
+        );
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 11,
+            channelKey: 'skot_channel',
+            title: 'Live is on',
+            body: 'Join it now !',
+          ),
+        );
+      }
+      await savePrintedLiveNotif(true);
+      return true;
+    } else {
+      await savePrintedLiveNotif(false);
+      return false;
+    }
+  }
+
   Future<void> printNotification() async {
+    /**
+     * Notification in case of messages
+     */
+
     // Retrieve the ID of the last notification received
     int? lastNotificationId = await loadLastIdMsg();
 
@@ -109,6 +149,11 @@ class RequestManager {
         await saveLastIdMsg(listMessages.last['id']);
       }
     }
+
+    /**
+     * Notification in case of live
+     */
+    await isOnLive();
   }
 
   void initBackgroundFetch() {

@@ -9,6 +9,7 @@ class CurrentSongPage extends StatefulWidget {
   final Function addToFavorites;
   final Function removeFromFavorites;
   final List<String> favorites;
+  final Function getLivePlaying;
 
   const CurrentSongPage({
     super.key,
@@ -17,6 +18,7 @@ class CurrentSongPage extends StatefulWidget {
     required this.addToFavorites,
     required this.removeFromFavorites,
     required this.favorites,
+    required this.getLivePlaying,
   });
 
   @override
@@ -61,27 +63,46 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 650),
-                      child: ProgressBar(
-                        progress: Duration(
-                            milliseconds: widget
-                                .audioPlayerController.currentPosition
-                                .toInt()),
-                        buffered: Duration(
-                            milliseconds: widget
-                                .audioPlayerController.bufferedPosition
-                                .toInt()),
-                        total: Duration(
-                            milliseconds: widget
-                                .audioPlayerController.maxDuration
-                                .toInt()),
-                        onSeek: (duration) {
-                          widget.audioPlayerController.player.seek(duration);
-                          setState(() {
-                            widget.audioPlayerController.changeCurrentPosition(
-                                duration.inMilliseconds.toDouble());
-                          });
-                        },
-                      ),
+                      child: !widget.getLivePlaying()
+                          ? ProgressBar(
+                              progress: Duration(
+                                  milliseconds: widget
+                                      .audioPlayerController.currentPosition
+                                      .toInt()),
+                              buffered: Duration(
+                                  milliseconds: widget
+                                      .audioPlayerController.bufferedPosition
+                                      .toInt()),
+                              total: Duration(
+                                  milliseconds: widget
+                                      .audioPlayerController.maxDuration
+                                      .toInt()),
+                              onSeek: (duration) {
+                                widget.audioPlayerController.player
+                                    .seek(duration);
+                                setState(() {
+                                  widget.audioPlayerController
+                                      .changeCurrentPosition(
+                                          duration.inMilliseconds.toDouble());
+                                });
+                              },
+                            )
+                          : ProgressBar(
+                              progress: Duration(
+                                  milliseconds: widget.position.toInt()),
+                              buffered: Duration(
+                                  milliseconds: widget.position.toInt()),
+                              total: const Duration(milliseconds: 1),
+                              onSeek: (duration) {
+                                widget.audioPlayerController.player
+                                    .seek(duration);
+                                setState(() {
+                                  widget.audioPlayerController
+                                      .changeCurrentPosition(
+                                          duration.inMilliseconds.toDouble());
+                                });
+                              },
+                            ),
                     ),
                   ),
                 ],
@@ -89,13 +110,15 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    iconSize: 30,
-                    icon: const Icon(Icons.skip_previous),
-                    onPressed: () {
-                      widget.audioPlayerController.skipToPrevious();
-                    },
-                  ),
+                  !widget.getLivePlaying()
+                      ? IconButton(
+                          iconSize: 30,
+                          icon: const Icon(Icons.skip_previous),
+                          onPressed: () {
+                            widget.audioPlayerController.skipToPrevious();
+                          },
+                        )
+                      : const SizedBox(width: 50),
                   const SizedBox(width: 50),
                   IconButton(
                     iconSize: 30,
@@ -107,48 +130,52 @@ class _CurrentSongPageState extends State<CurrentSongPage> {
                         : () => widget.audioPlayerController.play(),
                   ),
                   const SizedBox(width: 50),
-                  IconButton(
-                    iconSize: 30,
-                    icon: const Icon(Icons.skip_next),
-                    onPressed: () {
-                      widget.audioPlayerController.skipToNext();
-                    },
-                  ),
+                  !widget.getLivePlaying()
+                      ? IconButton(
+                          iconSize: 30,
+                          icon: const Icon(Icons.skip_next),
+                          onPressed: () {
+                            widget.audioPlayerController.skipToNext();
+                          },
+                        )
+                      : const SizedBox(width: 50),
                 ],
               ),
               const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    iconSize: 30,
-                    icon: widget.audioPlayerController.getRandom()
-                        ? const Icon(Icons.shuffle_on_outlined)
-                        : const Icon(Icons.shuffle_rounded),
-                    onPressed: () {
-                      widget.audioPlayerController.changeRandom();
-                    },
-                  ),
-                  const SizedBox(width: 50),
-                  IconButton(
-                    iconSize: 30,
-                    icon: widget.favorites
-                            .contains(widget.audioPlayerController.currentSong)
-                        ? const Icon(Icons.favorite)
-                        : const Icon(Icons.favorite_border),
-                    onPressed: () {
-                      if (widget.favorites
-                          .contains(widget.audioPlayerController.currentSong)) {
-                        widget.removeFromFavorites(
-                            widget.audioPlayerController.currentSong);
-                      } else {
-                        widget.addToFavorites(
-                            widget.audioPlayerController.currentSong);
-                      }
-                    },
-                  ),
-                ],
-              )
+              !widget.getLivePlaying()
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          iconSize: 30,
+                          icon: widget.audioPlayerController.getRandom()
+                              ? const Icon(Icons.shuffle_on_outlined)
+                              : const Icon(Icons.shuffle_rounded),
+                          onPressed: () {
+                            widget.audioPlayerController.changeRandom();
+                          },
+                        ),
+                        const SizedBox(width: 50),
+                        IconButton(
+                          iconSize: 30,
+                          icon: widget.favorites.contains(
+                                  widget.audioPlayerController.currentSong)
+                              ? const Icon(Icons.favorite)
+                              : const Icon(Icons.favorite_border),
+                          onPressed: () {
+                            if (widget.favorites.contains(
+                                widget.audioPlayerController.currentSong)) {
+                              widget.removeFromFavorites(
+                                  widget.audioPlayerController.currentSong);
+                            } else {
+                              widget.addToFavorites(
+                                  widget.audioPlayerController.currentSong);
+                            }
+                          },
+                        ),
+                      ],
+                    )
+                  : const SizedBox(height: 0),
             ],
           ),
         ),

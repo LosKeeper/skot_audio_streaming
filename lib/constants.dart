@@ -1,11 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
-String url = 'https://loskeeper.fr:42024';
-
-String availableSongsUrl = '$url/audio/available_songs.json';
-String availableAlbumsUrl = '$url/audio/available_albums.json';
-
 Color buttonColor = const Color.fromARGB(255, 95, 0, 119);
 
 qualityToExtension(int quality) {
@@ -52,4 +47,26 @@ Future<int> loadLastIdMsg() async {
 Future<void> saveLastIdMsg(int lastIdMsg) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setInt('lastIdMsg', lastIdMsg);
+}
+
+Future<bool> loadPrintedLiveNotif() async {
+  final prefs = await SharedPreferences.getInstance();
+  final printedLiveNotif = prefs.getBool('printedLiveNotif');
+  return printedLiveNotif ?? false;
+}
+
+Future<void> savePrintedLiveNotif(bool printedLiveNotif) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('printedLiveNotif', printedLiveNotif);
+}
+
+Future<bool> loadWantNotif() async {
+  final prefs = await SharedPreferences.getInstance();
+  final wantNotif = prefs.getBool('wantNotif');
+  return wantNotif ?? true;
+}
+
+Future<void> saveWantNotif(bool wantNotif) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('wantNotif', wantNotif);
 }

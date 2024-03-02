@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfilePage extends StatefulWidget {

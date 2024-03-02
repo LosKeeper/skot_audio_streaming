@@ -7,11 +7,12 @@ class SettingsPage extends StatefulWidget {
   final Function changeQuality;
   final Function changeCurrentIndex;
 
-  const SettingsPage(
-      {super.key,
-      required this.quality,
-      required this.changeQuality,
-      required this.changeCurrentIndex});
+  const SettingsPage({
+    super.key,
+    required this.quality,
+    required this.changeQuality,
+    required this.changeCurrentIndex,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -175,7 +176,7 @@ SKOT is a group of friends who are passionate about music and technology. Create
             },
           ),
         ],
-      )
+      ),
     ]);
   }
 }

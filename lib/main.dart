@@ -4,11 +4,14 @@ import 'package:audio_service/audio_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:universal_io/io.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'dart:async';
 
 import 'package:skot/constants.dart';
 import 'package:skot/current_song_card.dart';
 import 'package:skot/audio_player_controller.dart';
 import 'package:skot/network_request_manager.dart';
+import 'package:skot/url.dart';
 
 import 'package:skot/pages/current_song_page.dart';
 import 'package:skot/pages/settings_page.dart';
@@ -53,6 +56,9 @@ void main() async {
         ledColor: Colors.purple,
         playSound: true,
         enableVibration: true,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+        enableLights: true,
       )
     ],
     channelGroups: [
@@ -79,11 +85,12 @@ void main() async {
     ),
   );
 
-  runApp(MyApp(
-      quality: quality,
-      favorites: favorites,
-      audioPlayerController: audioPlayerController,
-      lastIdMsg: lastIdMsg));
+  runApp(OverlaySupport(
+      child: MyApp(
+          quality: quality,
+          favorites: favorites,
+          audioPlayerController: audioPlayerController,
+          lastIdMsg: lastIdMsg)));
   if (Platform.isAndroid || Platform.isIOS) {
     BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   }
@@ -142,12 +149,16 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   var _currentIndex = 1;
   String _albumRequested = '';
   List<String> _favorites = [];
   String username = '';
   final List<int> _previousPages = [-1];
+
+  late final AnimationController _controller;
+  late final Stream<bool> _isLiveStream;
 
   Future<void> changeCurrentIndex(int newIndex, {String? username}) async {
     setState(() {
@@ -207,6 +218,15 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     });
+
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+    _isLiveStream = Stream.periodic(
+      const Duration(seconds: 5),
+      (_) => null,
+    ).asyncMap((_) => widget.audioPlayerController.requestManager.isOnLive());
   }
 
   void _showDialog() {
@@ -244,6 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     widget.audioPlayerController.player.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -252,7 +273,39 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
+        leading: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset('assets/images/skot_white.png')),
+        title: Text(widget.title,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.bold)),
         actions: [
+          StreamBuilder<bool>(
+            stream: _isLiveStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!) {
+                return FadeTransition(
+                  opacity: _controller,
+                  child: IconButton(
+                    onPressed: () async =>
+                        await widget.audioPlayerController.setLiveSelected(),
+                    icon: const Icon(Icons.rss_feed),
+                  ),
+                );
+              } else {
+                return Opacity(
+                  opacity: 0.25,
+                  child: IconButton(
+                    onPressed: () async =>
+                        await widget.audioPlayerController.setLiveSelected(),
+                    icon: const Icon(Icons.rss_feed),
+                  ),
+                );
+              }
+            },
+          ),
           IconButton(
             onPressed: () => changeCurrentIndex(3),
             icon: const Icon(Icons.music_note),
@@ -364,6 +417,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           addToFavorites: addToFavorites,
                           removeFromFavorites: removeFromFavorites,
                           favorites: _favorites,
+                          getLivePlaying:
+                              widget.audioPlayerController.getLivePlaying,
                         ),
                       );
                     });

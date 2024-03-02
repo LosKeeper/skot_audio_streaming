@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:skot/constants.dart';
+import 'package:skot/url.dart';
 import 'package:skot/audio_player_controller.dart';
 
 class HomePage extends StatelessWidget {
