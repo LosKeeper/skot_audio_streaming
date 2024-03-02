@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '**'
+      - '!release'
 
 jobs:
   test_and_analyze:

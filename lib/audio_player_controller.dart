@@ -226,6 +226,16 @@ class AudioPlayerController extends BaseAudioHandler {
 
       _currentSongController.add(currentSong);
     } else if (await requestManager.isOnLive()) {
+      // Show a loading logo notification
+      showSimpleNotification(
+        const Text(
+          'Loading live please wait...',
+          style: TextStyle(color: Colors.white),
+        ),
+        background: Colors.blue,
+        duration: const Duration(seconds: 5),
+      );
+
       currentArtist = 'SKOT';
       currentSong = 'SKOT Live';
       currentCover = const AssetImage('assets/images/skot.png');
@@ -257,6 +267,8 @@ class AudioPlayerController extends BaseAudioHandler {
 
       livePlaying = true;
 
+      // Wait until audio is loaded for windows
+      await Future.delayed(const Duration(milliseconds: 10));
       await play();
     } else {
       liveSelected = false;

@@ -56,6 +56,9 @@ void main() async {
         ledColor: Colors.purple,
         playSound: true,
         enableVibration: true,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+        enableLights: true,
       )
     ],
     channelGroups: [

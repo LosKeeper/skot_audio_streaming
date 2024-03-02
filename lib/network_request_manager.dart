@@ -93,7 +93,7 @@ class RequestManager {
   Future<bool> isOnLive() async {
     var request = await http.get(Uri.parse(liveUrlInfo));
     // check if the mount point is available
-    var response = request.body.contains('Mount Point /stream');
+    var response = request.body.contains(mountPointName);
 
     bool? notifLivePrinted = await loadPrintedLiveNotif();
 
@@ -110,7 +110,7 @@ class RequestManager {
             id: 11,
             channelKey: 'skot_channel',
             title: 'Live is on',
-            body: 'Click here to join it !',
+            body: 'Join it now !',
           ),
         );
       }
