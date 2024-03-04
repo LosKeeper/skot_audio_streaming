@@ -29,157 +29,165 @@ class CurrentSongPage extends StatefulWidget {
 class _CurrentSongPageState extends State<CurrentSongPage> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                widget.audioPlayerController.currentSong,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                widget.audioPlayerController.currentArtist,
-                style: const TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 700),
-                  child: Image(
-                    image: widget.audioPlayerController.currentCover,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 650),
-                      child: !widget.getLivePlaying()
-                          ? ProgressBar(
-                              progress: Duration(
-                                  milliseconds: widget
-                                      .audioPlayerController.currentPosition
-                                      .toInt()),
-                              buffered: Duration(
-                                  milliseconds: widget
-                                      .audioPlayerController.bufferedPosition
-                                      .toInt()),
-                              total: Duration(
-                                  milliseconds: widget
-                                      .audioPlayerController.maxDuration
-                                      .toInt()),
-                              onSeek: (duration) {
-                                widget.audioPlayerController.player
-                                    .seek(duration);
-                                setState(() {
-                                  widget.audioPlayerController
-                                      .changeCurrentPosition(
-                                          duration.inMilliseconds.toDouble());
-                                });
-                              },
-                            )
-                          : ProgressBar(
-                              progress: Duration(
-                                  milliseconds: widget.position.toInt()),
-                              buffered: Duration(
-                                  milliseconds: widget.position.toInt()),
-                              total: const Duration(milliseconds: 1),
-                              onSeek: (duration) {
-                                widget.audioPlayerController.player
-                                    .seek(duration);
-                                setState(() {
-                                  widget.audioPlayerController
-                                      .changeCurrentPosition(
-                                          duration.inMilliseconds.toDouble());
-                                });
-                              },
-                            ),
+    return widget.audioPlayerController.currentSong == ''
+        ? const Center(
+            child: Text('No song selected. Please select a song to play.'),
+          )
+        : Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      widget.audioPlayerController.currentSong,
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  !widget.getLivePlaying()
-                      ? IconButton(
-                          iconSize: 30,
-                          icon: const Icon(Icons.skip_previous),
-                          onPressed: () {
-                            widget.audioPlayerController.skipToPrevious();
-                          },
-                        )
-                      : const SizedBox(width: 50),
-                  const SizedBox(width: 50),
-                  IconButton(
-                    iconSize: 30,
-                    icon: Icon(widget.audioPlayerController.player.playing
-                        ? Icons.pause
-                        : Icons.play_arrow),
-                    onPressed: widget.audioPlayerController.player.playing
-                        ? () => widget.audioPlayerController.pause()
-                        : () => widget.audioPlayerController.play(),
-                  ),
-                  const SizedBox(width: 50),
-                  !widget.getLivePlaying()
-                      ? IconButton(
-                          iconSize: 30,
-                          icon: const Icon(Icons.skip_next),
-                          onPressed: () {
-                            widget.audioPlayerController.skipToNext();
-                          },
-                        )
-                      : const SizedBox(width: 50),
-                ],
-              ),
-              const SizedBox(height: 30),
-              !widget.getLivePlaying()
-                  ? Row(
+                    const SizedBox(height: 10),
+                    Text(
+                      widget.audioPlayerController.currentArtist,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: 20),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 700),
+                        child: Image(
+                          image: widget.audioPlayerController.currentCover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Stack(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 650),
+                            child: !widget.getLivePlaying()
+                                ? ProgressBar(
+                                    progress: Duration(
+                                        milliseconds: widget
+                                            .audioPlayerController
+                                            .currentPosition
+                                            .toInt()),
+                                    buffered: Duration(
+                                        milliseconds: widget
+                                            .audioPlayerController
+                                            .bufferedPosition
+                                            .toInt()),
+                                    total: Duration(
+                                        milliseconds: widget
+                                            .audioPlayerController.maxDuration
+                                            .toInt()),
+                                    onSeek: (duration) {
+                                      widget.audioPlayerController.player
+                                          .seek(duration);
+                                      setState(() {
+                                        widget.audioPlayerController
+                                            .changeCurrentPosition(duration
+                                                .inMilliseconds
+                                                .toDouble());
+                                      });
+                                    },
+                                  )
+                                : ProgressBar(
+                                    progress: Duration(
+                                        milliseconds: widget.position.toInt()),
+                                    buffered: Duration(
+                                        milliseconds: widget.position.toInt()),
+                                    total: const Duration(milliseconds: 1),
+                                    onSeek: (duration) {
+                                      widget.audioPlayerController.player
+                                          .seek(duration);
+                                      setState(() {
+                                        widget.audioPlayerController
+                                            .changeCurrentPosition(duration
+                                                .inMilliseconds
+                                                .toDouble());
+                                      });
+                                    },
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          iconSize: 30,
-                          icon: widget.audioPlayerController.getRandom()
-                              ? const Icon(Icons.shuffle_on_outlined)
-                              : const Icon(Icons.shuffle_rounded),
-                          onPressed: () {
-                            widget.audioPlayerController.changeRandom();
-                          },
-                        ),
+                        !widget.getLivePlaying()
+                            ? IconButton(
+                                iconSize: 30,
+                                icon: const Icon(Icons.skip_previous),
+                                onPressed: () {
+                                  widget.audioPlayerController.skipToPrevious();
+                                },
+                              )
+                            : const SizedBox(width: 50),
                         const SizedBox(width: 50),
                         IconButton(
                           iconSize: 30,
-                          icon: widget.favorites.contains(
-                                  widget.audioPlayerController.currentSong)
-                              ? const Icon(Icons.favorite)
-                              : const Icon(Icons.favorite_border),
-                          onPressed: () {
-                            if (widget.favorites.contains(
-                                widget.audioPlayerController.currentSong)) {
-                              widget.removeFromFavorites(
-                                  widget.audioPlayerController.currentSong);
-                            } else {
-                              widget.addToFavorites(
-                                  widget.audioPlayerController.currentSong);
-                            }
-                          },
+                          icon: Icon(widget.audioPlayerController.player.playing
+                              ? Icons.pause
+                              : Icons.play_arrow),
+                          onPressed: widget.audioPlayerController.player.playing
+                              ? () => widget.audioPlayerController.pause()
+                              : () => widget.audioPlayerController.play(),
                         ),
+                        const SizedBox(width: 50),
+                        !widget.getLivePlaying()
+                            ? IconButton(
+                                iconSize: 30,
+                                icon: const Icon(Icons.skip_next),
+                                onPressed: () {
+                                  widget.audioPlayerController.skipToNext();
+                                },
+                              )
+                            : const SizedBox(width: 50),
                       ],
-                    )
-                  : const SizedBox(height: 0),
-            ],
-          ),
-        ),
-      ),
-    );
+                    ),
+                    const SizedBox(height: 30),
+                    !widget.getLivePlaying()
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                iconSize: 30,
+                                icon: widget.audioPlayerController.getRandom()
+                                    ? const Icon(Icons.shuffle_on_outlined)
+                                    : const Icon(Icons.shuffle_rounded),
+                                onPressed: () {
+                                  widget.audioPlayerController.changeRandom();
+                                },
+                              ),
+                              const SizedBox(width: 50),
+                              IconButton(
+                                iconSize: 30,
+                                icon: widget.favorites.contains(widget
+                                        .audioPlayerController.currentSong)
+                                    ? const Icon(Icons.favorite)
+                                    : const Icon(Icons.favorite_border),
+                                onPressed: () {
+                                  if (widget.favorites.contains(widget
+                                      .audioPlayerController.currentSong)) {
+                                    widget.removeFromFavorites(widget
+                                        .audioPlayerController.currentSong);
+                                  } else {
+                                    widget.addToFavorites(widget
+                                        .audioPlayerController.currentSong);
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                        : const SizedBox(height: 0),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }

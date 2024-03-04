@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter/foundation.dart';
 
 class SettingsPage extends StatefulWidget {
   final int quality;
@@ -111,6 +112,11 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             leading: const Icon(Icons.info),
+          ),
+          SettingsTile(
+            title: const Text("Version mode"),
+            value: kDebugMode ? const Text('Debug') : const Text('Release'),
+            leading: const Icon(Icons.new_releases),
           ),
         ],
       ),

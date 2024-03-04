@@ -1,5 +1,5 @@
 # SKOT Streaming App
-<img src="https://img.shields.io/badge/Version-0.4.0-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/Version-0.4.1-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License">
 <img src="https://img.shields.io/badge/Status-Active-green.svg" alt="Status">
 
@@ -11,7 +11,7 @@
 5. [Usage](#usage)
 6. [Contributing](#contributing)
 7. [License](#license)
-8. [Changelog](CHANGELOG.md)
+8. [Changelog](#changelog)
 9. [TODO](#todo)
 10. [Suggestions](#suggestions)
 

@@ -372,6 +372,8 @@ class AudioPlayerController extends BaseAudioHandler {
   @override
   Future<void> stop() async {
     currentPosition = 0.0;
+    currentSong = '';
+    currentArtist = '';
     await player.stop();
     await super.stop();
   }
