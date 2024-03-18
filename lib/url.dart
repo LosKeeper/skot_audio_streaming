@@ -5,6 +5,7 @@ String liveUrl = kDebugMode
     ? 'https://loskeeper.fr:42002/debug'
     : 'https://loskeeper.fr:42002/stream';
 String liveUrlInfo = 'https://loskeeper.fr:42002/status.xsl';
+String liveUrlName = '$url/audio/live.json';
 
 String availableSongsUrl = '$url/audio/available_songs.json';
 String availableAlbumsUrl = '$url/audio/available_albums.json';

@@ -122,6 +122,12 @@ class RequestManager {
     }
   }
 
+  Future<String> getLiveName() async {
+    var request = await http.get(Uri.parse(liveUrlName));
+    var response = request.body;
+    return response.trim();
+  }
+
   Future<void> printNotification() async {
     /**
      * Notification in case of messages

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added ios version of the app (need to test it)
+- Added name for the current live from the server
+
 ## [0.4.1] - 2024-03-04
 
 ### Fixed
