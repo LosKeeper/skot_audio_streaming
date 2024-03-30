@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2024-03-30
+
+### Added
+- Added ios version of the app (need to test it)
+- Added name for the current live from the server
+
 ## [0.4.1] - 2024-03-04
 
 ### Fixed
@@ -53,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial releass
 
-[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v1.0.0
 [0.4.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.4.1
 [0.4.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.4.0
 [0.3.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.3.1

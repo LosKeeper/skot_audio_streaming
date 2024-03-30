@@ -237,7 +237,7 @@ class AudioPlayerController extends BaseAudioHandler {
       );
 
       currentArtist = 'SKOT';
-      currentSong = 'SKOT Live';
+      currentSong = await requestManager.getLiveName();
       currentCover = const AssetImage('assets/images/skot.png');
 
       PaletteGenerator paletteGenerator =
