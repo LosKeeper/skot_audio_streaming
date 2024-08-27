@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.1] - 2024-08-27
 
 ### Fix
-- Change minimal version of Android to 14
+- Change minimal version of Android according to Google requirements (need to fix seach bar because of the new version of the Android SDK)
 
 ## [1.0.0] - 2024-03-30
 
