@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2024-08-27
+
+### Fix
+- Change minimal version of Android to 14
+
 ## [1.0.0] - 2024-03-30
 
 ### Added
@@ -60,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial releass
 
 [Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v1.0.0...HEAD
+[1.0.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v1.0.1
 [1.0.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v1.0.0
 [0.4.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.4.1
 [0.4.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.4.0
