@@ -359,7 +359,7 @@ class _MyHomePageState extends State<MyHomePage>
               case 0:
                 return PopScope(
                   canPop: false,
-                  onPopInvoked: (bool didPop) {
+                  onPopInvokedWithResult: (bool didPop, result) {
                     changeCurrentIndex(_previousPages.last);
                     _previousPages.removeLast();
                   },
@@ -382,7 +382,7 @@ class _MyHomePageState extends State<MyHomePage>
               case 2:
                 return PopScope(
                   canPop: false,
-                  onPopInvoked: (bool didPop) {
+                  onPopInvokedWithResult: (bool didPop, result) {
                     changeCurrentIndex(_previousPages.last);
                     _previousPages.removeLast();
                   },
@@ -407,7 +407,7 @@ class _MyHomePageState extends State<MyHomePage>
                       double position = snapshot.data ?? 0.0;
                       return PopScope(
                         canPop: false,
-                        onPopInvoked: (bool didPop) {
+                        onPopInvokedWithResult: (bool didPop, result) {
                           changeCurrentIndex(_previousPages.last);
                           _previousPages.removeLast();
                         },
@@ -425,7 +425,7 @@ class _MyHomePageState extends State<MyHomePage>
               case 4:
                 return PopScope(
                   canPop: false,
-                  onPopInvoked: (bool didPop) {
+                  onPopInvokedWithResult: (bool didPop, result) {
                     changeCurrentIndex(_previousPages.last);
                     _previousPages.removeLast();
                   },
@@ -438,7 +438,7 @@ class _MyHomePageState extends State<MyHomePage>
               case 5:
                 return PopScope(
                   canPop: false,
-                  onPopInvoked: (bool didPop) {
+                  onPopInvokedWithResult: (bool didPop, result) {
                     changeCurrentIndex(_previousPages.last);
                     _previousPages.removeLast();
                   },
@@ -457,7 +457,7 @@ class _MyHomePageState extends State<MyHomePage>
               case 6:
                 return PopScope(
                   canPop: false,
-                  onPopInvoked: (bool didPop) {
+                  onPopInvokedWithResult: (bool didPop, result) {
                     changeCurrentIndex(_previousPages.last);
                     _previousPages.removeLast();
                   },

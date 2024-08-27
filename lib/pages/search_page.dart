@@ -32,7 +32,7 @@ class SearchPage extends StatelessWidget {
                 builder: (BuildContext context, SearchController controller) {
               return SearchBar(
                 controller: controller,
-                padding: const MaterialStatePropertyAll<EdgeInsets>(
+                padding: const WidgetStatePropertyAll<EdgeInsets>(
                     EdgeInsets.symmetric(horizontal: 16.0)),
                 onTap: () {
                   controller.openView();
@@ -51,13 +51,17 @@ class SearchPage extends StatelessWidget {
                       .contains(controller.value.text.toLowerCase()))
                   .toSet();
 
-              var filteredAlbums = jsonAvailableAlbums.keys
-                  .where((album) => album
-                      .toLowerCase()
-                      .contains(controller.value.text.toLowerCase()))
-                  .toSet();
+              // var filteredAlbums = jsonAvailableAlbums.keys
+              //     .where((album) => album
+              //         .toLowerCase()
+              //         .contains(controller.value.text.toLowerCase()))
+              //     .toSet();
 
-              var combined = {...filteredSongs, ...filteredAlbums}.toList();
+              var combined = {
+                ...filteredSongs,
+                // ...filteredAlbums
+              }.toList();
+
               combined
                   .sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
@@ -81,11 +85,11 @@ class SearchPage extends StatelessWidget {
                             if (jsonAvailableSongs[combined[index]] != null) {
                               await changeCurrentSong(
                                   combined[index].toString());
-                              changeCurrentIndex(3);
+                              // changeCurrentIndex(3);
                               playSong();
                             } else {
-                              changeAlbumRequested(combined[index].toString());
-                              changeCurrentIndex(5);
+                              // changeAlbumRequested(combined[index].toString());
+                              // changeCurrentIndex(5);
                             }
                           });
                     }),
