@@ -9,7 +9,7 @@ PODS:
   - background_fetch (1.2.2):
     - Flutter
   - Flutter (1.0.0)
-  - IosAwnCore (0.9.1)
+  - IosAwnCore (0.9.3)
   - just_audio (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
@@ -68,7 +68,7 @@ SPEC CHECKSUMS:
   awesome_notifications: 399076ea2bdf119beef9126f1ca6914215390997
   background_fetch: ec64adecd504f2d0d333b4b11d31f47c8ee23d12
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  IosAwnCore: 4691f457bd8dc9a3a0a941cee6439a894a0b81aa
+  IosAwnCore: b8601fbb37f7b3560f31b84ebf55a72f65812e05
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
