@@ -1,5 +1,5 @@
 # SKOT Streaming App
-<img src="https://img.shields.io/badge/Version-1.0.1-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/Version-1.0.2-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License">
 <img src="https://img.shields.io/badge/Status-Active-green.svg" alt="Status">
 
