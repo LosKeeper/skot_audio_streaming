@@ -44,6 +44,9 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 
 ## TODO
 - [ ] Offline mode
+- [x] Start app from url Android
+- [ ] Start app from url IOS
+- [ ] Debug Release for ISO
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app
