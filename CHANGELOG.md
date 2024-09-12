@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2024-09-12
+
+### Added
+- Open app from a URL on Android
+
 ## [1.0.1] - 2024-08-27
 
 ### Fix
@@ -64,7 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial releass
 
-[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/LosKeeper/skot_audio_streaming/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v1.0.2
 [1.0.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v1.0.1
 [1.0.0]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v1.0.0
 [0.4.1]: https://github.com/LosKeeper/skot_audio_streaming/releases/tag/v0.4.1

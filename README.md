@@ -1,5 +1,5 @@
 # SKOT Streaming App
-<img src="https://img.shields.io/badge/Version-1.0.1-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/Version-1.0.2-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg" alt="License">
 <img src="https://img.shields.io/badge/Status-Active-green.svg" alt="Status">
 
@@ -44,6 +44,9 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 
 ## TODO
 - [ ] Offline mode
+- [x] Start app from url Android
+- [ ] Start app from url IOS
+- [ ] Debug Release for ISO
 
 ## Suggestions
 - [ ] Swipe on the curent song card like Spotify app
