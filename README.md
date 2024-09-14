@@ -44,7 +44,8 @@ For the changelog, see the [changelog](CHANGELOG.md) file.
 
 ## TODO
 - [ ] Offline mode
-- [x] Start app from url Android
+- [ ] Fix caching of available_songs and available_albums json files (force refresh at startup)
+- [ ] Notification to propose to download the app from the web version
 - [ ] Start app from url IOS
 - [ ] Debug Release for ISO
 

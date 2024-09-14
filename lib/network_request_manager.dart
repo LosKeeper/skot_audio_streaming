@@ -11,10 +11,10 @@ import 'package:skot/constants.dart';
 import 'package:skot/url.dart';
 
 class RequestManager {
-  final String availableSongsUrl;
-  final String availableAlbumsUrl;
-  final String messagesUrl;
-  final String selectionUrl;
+  String availableSongsUrl;
+  String availableAlbumsUrl;
+  String messagesUrl;
+  String selectionUrl;
 
   Map<String, dynamic> jsonAvailableSongs = {};
   Map<String, dynamic> jsonAvailableAlbums = {};
@@ -41,13 +41,27 @@ class RequestManager {
   }
 
   Future<Map<String, dynamic>> getRequestSongs() async {
-    var response = await http.get(Uri.parse(availableSongsUrl));
+    var response = await http.get(
+      Uri.parse(availableSongsUrl),
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    );
     var json = jsonDecode(response.body);
     return json;
   }
 
   Future<Map<String, dynamic>> getRequestAlbums() async {
-    var response = await http.get(Uri.parse(availableAlbumsUrl));
+    var response = await http.get(
+      Uri.parse(availableAlbumsUrl),
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    );
     var json = jsonDecode(response.body);
     return json;
   }
@@ -76,14 +90,28 @@ class RequestManager {
   }
 
   Future<List<dynamic>> getMessages() async {
-    var response = await http.get(Uri.parse(messagesUrl));
+    var response = await http.get(
+      Uri.parse(messagesUrl),
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    );
     var json = jsonDecode(response.body);
     listMessages = json;
     return listMessages;
   }
 
   Future<List<String>> getSelection() async {
-    var response = await http.get(Uri.parse(selectionUrl));
+    var response = await http.get(
+      Uri.parse(selectionUrl),
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    );
     var json = jsonDecode(response.body);
     List<String> titles =
         json.map<String>((item) => item['title'].toString()).toList();
