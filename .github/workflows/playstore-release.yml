@@ -55,6 +55,9 @@ jobs:
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
 
+      - name: Accept Android Licenses
+        run: yes | sdkmanager --licenses
+
       - name: Build app bundle
         run: flutter build appbundle --release
 
