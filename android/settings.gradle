@@ -22,8 +22,11 @@ pluginManagement {
 }
 
 plugins {
+    // Upgraded for Android 16KB pages + latest SDKs
+    // AGP 8.12.0, Kotlin 2.1.0 (ensure Flutter Gradle plugin supports these)
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "7.3.0" apply false
+    id "com.android.application" version "8.12.0" apply false
+    id "org.jetbrains.kotlin.android" version "2.1.0" apply false
 }
 
 include ":app"
