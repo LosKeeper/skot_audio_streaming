@@ -1,10 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.9.22'
+    ext.kotlin_version = '2.1.0' // Version compatible de Kotlin
     ext {
-        compileSdkVersion = 34
-        minSdkVersion = 21
-        targetSdkVersion = 34
+        compileSdkVersion = 36
+        minSdkVersion = 35
+        targetSdkVersion = 36
         appCompatVersion = "1.4.2"
+        ndkVersion = "28.0.12433566"
+        buildToolsVersion = "36.0.0"
     }
     repositories {
         google()
@@ -13,7 +15,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:8.12.0' // Version compatible avec Gradle 8.13
     }
 }
 

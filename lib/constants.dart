@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 Color buttonColor = const Color.fromARGB(255, 95, 0, 119);
 
-qualityToExtension(int quality) {
+String qualityToExtension(int quality) {
   switch (quality) {
     case 0:
       return '.aac';

@@ -24,7 +24,7 @@ class CurrentSongCard extends StatelessWidget {
         onTap: () => changeCurrentIndex(3),
         child: Card(
           color: (audioPlayerController.dominantColor ?? Colors.green)
-              .withOpacity(0.8),
+              .withAlpha(204),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
