@@ -1,11 +1,11 @@
 name: skot
 description: "Streaming Service for SKOT Label"
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.2+10
+version: 1.0.3+11
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: ">=3.2.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -44,7 +44,6 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
 
 flutter:
-
   uses-material-design: true
 
   assets:
@@ -52,7 +51,6 @@ flutter:
     - assets/images/live_cover.png
     - assets/images/skot.png
     - assets/images/skot_white.png
-
 
 flutter_launcher_icons:
   android: "launcher_icon"

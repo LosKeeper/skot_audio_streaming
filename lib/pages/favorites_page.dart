@@ -59,8 +59,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
       imageUrl,
       () => PaletteGenerator.fromImageProvider(
         CachedNetworkImageProvider(imageUrl),
-      ).then((value) =>
-          value.dominantColor?.color ?? Colors.green.withOpacity(0.8)),
+      ).then(
+          (value) => value.dominantColor?.color ?? Colors.green.withAlpha(204)),
     );
   }
 
@@ -218,7 +218,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                     },
                                     child: Card(
                                       color: snapshot.data ??
-                                          Colors.green.withOpacity(0.8),
+                                          Colors.green.withAlpha(204),
                                       child: Row(
                                         children: [
                                           ClipRRect(
