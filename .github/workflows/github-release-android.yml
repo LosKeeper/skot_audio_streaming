@@ -21,13 +21,13 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '18'
+          distribution: "temurin"
+          java-version: "21"
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.9'
+          flutter-version: "3.35.4"
 
       - name: Cache Flutter dependencies
         uses: subosito/flutter-action@v2
@@ -54,6 +54,9 @@ jobs:
           echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+
+      - name: Accept Android Licenses
+        run: yes | sdkmanager --licenses
 
       - name: Build apk
         run: flutter build apk --release

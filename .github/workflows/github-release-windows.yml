@@ -21,7 +21,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.9'
+          flutter-version: "3.35.4"
 
       - name: Get packages
         run: flutter pub get
@@ -44,7 +44,7 @@ jobs:
         run: |
           $content = Get-Content pubspec.yaml -Raw
           $tagRegex = 'version: (\d+\.\d+\.\d+)'
-          
+
           if ($content -match $tagRegex) {
               $tag = $matches[1]
               echo "::set-output name=tag::$tag"
@@ -52,7 +52,6 @@ jobs:
               echo "Version not found in pubspec.yaml"
               exit 1
           }
-
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v1
